@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>NitroPlay</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="style.css" />
+		<script type="module" src="App.ts"></script>
+	</head>
+	<body>
+		<div id="controlPanel">
+			<section>
+				<h2>File Import</h2>
+				<button id="ndsFileImportButton">Import .nds</button>
+
+				<dialog id="ndsFileImportDialog">
+					<form id="importForm">
+						<label for="ndsFileInput">Select .nds file</label>
+						<input type="file" id="ndsFileInput" accept=".nds" />
+						<span id="ndsFileName"></span>
+						<span id="ndsImportStatus"></span>
+					</form>
+
+					<select id="ndsSdatSelect" disabled></select>
+					<span id="ndsSdatStatus"></span>
+
+					<button id="ndsImportButton" disabled>Import</button>
+				</dialog>
+			</section>
+
+			<section>
+				<h2>Playback</h2>
+				<div class="configRow">
+					<button id="seqLeftButton" disabled>&larr;</button>
+					<select id="seqSelect" disabled></select>
+					<button id="seqRightButton" disabled>&rarr;</button>
+				</div>
+
+				<div>
+					<button id="seqPlayButton" disabled>Play</button>
+					<button id="seqStopButton" disabled>Stop</button>
+				</div>
+
+				<div class="configRow">
+					<img id="speakerIcon" alt="Volume" />
+					<input type="range" id="volumeSlider" min="0" max="100" value="100"  />
+				</div>
+			</section>
+		</div>
+
+		<div id="viewer">
+			<canvas id="pianoOverlayCanvas"></canvas>
+			<canvas id="pianoCanvas"></canvas>
+			<canvas id="topTimelineCanvas"></canvas>
+			<canvas id="bottomTimelineCanvas"></canvas>
+		</div>
+	</body>
+</html>
