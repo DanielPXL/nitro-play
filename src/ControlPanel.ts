@@ -2,7 +2,7 @@ import * as AudioWorkerComms from "./AudioWorkerComms";
 import * as PlaybackSection from "./PlaybackSection";
 import * as FileImportDialog from "./FileImportDialog";
 
-export function init(load: () => Promise<void>, play: () => void, stop: () => Promise<void>) {
+export function init(load: () => Promise<void>, play: () => void, stop: () => void) {
 	const ndsFileImportButton = document.getElementById("ndsFileImportButton") as HTMLButtonElement;
 
 	PlaybackSection.init(async () => {
@@ -10,9 +10,9 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => Pr
 	}, () => {
 		ndsFileImportButton.disabled = true;
 		play();
-	}, async () => {
+	}, () => {
 		ndsFileImportButton.disabled = false;
-		await stop();
+		stop();
 	});
 
 	FileImportDialog.init(async () => {

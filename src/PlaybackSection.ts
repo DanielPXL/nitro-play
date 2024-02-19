@@ -28,10 +28,32 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 	disable();
 
 	async function loadSeq() {
+		seqPlayButton.disabled = true;
+		seqStopButton.disabled = true;
+		seqPlayButton.disabled = true;
+		seqLeftButton.disabled = true;
+		seqSelect.disabled = true;
+		seqRightButton.disabled = true;
+
 		stop();
 		const seq = seqSelect.value;
 		await AudioWorkerComms.call("loadSeq", { name: seq });
-		load();
+		await load();
+
+		seqPlayButton.disabled = false;
+		seqSelect.disabled = false;
+
+		if (seqSelect.selectedIndex === 0) {
+			seqLeftButton.disabled = true;
+		} else {
+			seqLeftButton.disabled = false;
+		}
+
+		if (seqSelect.selectedIndex === seqSelect.options.length - 1) {
+			seqRightButton.disabled = true;
+		} else {
+			seqRightButton.disabled = false;
+		}
 	}
 
 	seqLeftButton.addEventListener("click", () => {
@@ -45,24 +67,7 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 	});
 
 	seqSelect.addEventListener("change", async () => {
-		if (seqSelect.selectedIndex === 0) {
-			seqLeftButton.disabled = true;
-		} else {
-			seqLeftButton.disabled = false;
-		}
-
-		if (seqSelect.selectedIndex === seqSelect.options.length - 1) {
-			seqRightButton.disabled = true;
-		} else {
-			seqRightButton.disabled = false;
-		}
-
-		seqPlayButton.disabled = true;
-		seqStopButton.disabled = true;
-
-		await loadSeq();
-
-		seqPlayButton.disabled = false;
+		await loadSeq();		
 	});
 
 	seqPlayButton.addEventListener("click", async () => {
@@ -76,16 +81,9 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 		seqStopButton.disabled = false;
 	});
 
-	seqStopButton.addEventListener("click", () => {
-		seqPlayButton.disabled = false;
-		seqStopButton.disabled = true;
-		seqLeftButton.disabled = false;
-		seqSelect.disabled = false;
-		seqRightButton.disabled = false;
-
+	seqStopButton.addEventListener("click", async () => {
 		stop();
-
-		loadSeq();
+		await loadSeq();
 	});
 
 	volumeSlider.addEventListener("input", () => {

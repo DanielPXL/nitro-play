@@ -46,6 +46,7 @@ export function init(useSdatCallback: () => void) {
 	});
 
 	sdatSelect.addEventListener("change", async () => {
+		importButton.disabled = true;
 		sdatStatus.textContent = "⌛";
 		const sdatPath = sdatSelect.value;
 
@@ -56,7 +57,6 @@ export function init(useSdatCallback: () => void) {
 			sdatStatus.textContent = "❌";
 			console.error(err);
 			alert(err);
-			importButton.disabled = true;
 			return;
 		}
 

@@ -7,9 +7,6 @@ import { SynthState } from "./SynthState";
 
 const targetBufferHealth = 3.0;
 let acceptBuffers = false;
-let tryingToStop = false;
-let stopResolve: () => void;
-let stopPromise = new Promise<void>(resolve => stopResolve = resolve);
 
 // AudioContext can only be created in response to a user gesture
 addEventListener("click", () => {
@@ -43,10 +40,6 @@ function start() {
 			if (acceptBuffers) {
 				StateManager.addStates(states);
 			}
-
-			if (tryingToStop) {
-				stopResolve();
-			}
 		}
 	}, 200);
 }
@@ -59,14 +52,11 @@ setInterval(() => {
 	StateManager.discardStates(StateManager.topTime() - targetBufferHealth * 2);
 }, 200);
 
-async function stop() {
+function stop() {
 	acceptBuffers = false;
 	clearInterval(tickInterval);
 	AudioPlayer.stop();
 	StateManager.discardStates(Infinity);
-
-	await stopPromise;
-	stopPromise = new Promise<void>(resolve => stopResolve = resolve);
 }
 
 AudioWorkerComms.init();
