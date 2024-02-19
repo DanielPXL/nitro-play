@@ -5,7 +5,7 @@ import * as PianoRenderer from "./PianoRenderer";
 import { TimelineRenderer } from "./TimelineRenderer";
 
 export let noteRange: [Audio.Note, Audio.Note] = [Audio.Note.CNegative1, Audio.Note.B8];
-export let pianoHeight = 100;
+export let pianoHeight = 0.1;
 export let pianoPosition = 0.7;
 
 export let colors = Array.from({ length: 16 }, (_, i) => `hsl(${i * 360 / 16}, 100%, 50%)`);
@@ -30,13 +30,14 @@ export function init() {
 }
 
 export function resize() {
+	const pianoHeightPixels = pianoHeight * window.innerHeight;
 	topTimeline.resize(0, window.innerWidth, window.innerHeight * pianoPosition);
 
-	PianoRenderer.resize(pianoPosition * window.innerHeight, window.innerWidth, pianoHeight);
+	PianoRenderer.resize(pianoPosition * window.innerHeight, window.innerWidth, pianoHeightPixels);
 	PianoRenderer.drawKeys(noteRange[0], noteRange[1]);
 	
-	const bottomHeight = window.innerHeight * (1 - pianoPosition) - pianoHeight;
-	bottomTimeline.resize(window.innerHeight * pianoPosition + pianoHeight, window.innerWidth, bottomHeight);
+	const bottomHeight = window.innerHeight * (1 - pianoPosition) - pianoHeightPixels;
+	bottomTimeline.resize(window.innerHeight * pianoPosition + pianoHeightPixels, window.innerWidth, bottomHeight);
 	
 	// Same speed
 	if (bottomSameSpeed) {
@@ -69,6 +70,12 @@ function render(time: DOMHighResTimeStamp) {
 	requestAnimationFrame(render);
 }
 
-function invLerp(a: number, b: number, v: number) {
-	return (v - a) / (b - a);
+export function setPianoPosition(position: number) {
+	pianoPosition = position;
+	resize();
+}
+
+export function setPianoHeight(height: number) {
+	pianoHeight = height;
+	resize();
 }
