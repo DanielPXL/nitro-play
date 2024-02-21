@@ -75,8 +75,7 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 			}
 			
 			controlDiv.appendChild(checkbox);
-
-			checkbox.dispatchEvent(new Event("change"));
+			entry.update(storedValue !== null ? storedValue === "true" : entry.default);
 			break;
 		}
 		
@@ -112,24 +111,26 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 			}
 			
 			numberInput.type = "number";
-			numberInput.value = entry.default.toString();
+			numberInput.value = storedValue !== null ? storedValue : entry.default.toString();
 			numberInput.step = entry.integer ? "1" : "0.01";
-			numberInput.oninput = () => {
-				if (isNaN(+numberInput.value)) {
-					return;
-				}
+			if (entry.forceRange) {
+				numberInput.min = entry.min.toString();
+				numberInput.max = entry.max.toString();
+			}
 
+			numberInput.oninput = () => {
 				let value = entry.integer ? Math.round(numberInput.valueAsNumber) : numberInput.valueAsNumber;
 
 				if (entry.forceRange) {
 					if (value < entry.min) {
 						value = entry.min;
+						numberInput.valueAsNumber = value;
 					} else if (value > entry.max) {
 						value = entry.max;
+						numberInput.valueAsNumber = value;
 					}
 				}
 
-				numberInput.valueAsNumber = value;
 				slider.valueAsNumber = value;
 				storeValue(value);
 				entry.update(value);
@@ -138,7 +139,7 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 			controlDiv.appendChild(slider);
 			controlDiv.appendChild(numberInput);
 
-			slider.dispatchEvent(new Event("input"));
+			entry.update(storedValue !== null ? +storedValue : entry.default);
 
 			break;
 		}
