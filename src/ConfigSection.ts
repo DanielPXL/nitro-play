@@ -84,8 +84,8 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 			const numberInput = document.createElement("input");
 			
 			createResetButton(() => {
-				slider.value = entry.default.toString();
-				slider.dispatchEvent(new Event("input"));
+				numberInput.value = entry.default.toString();
+				numberInput.dispatchEvent(new Event("input"));
 			});
 			
 			slider.type = "range";
@@ -104,7 +104,6 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 					}
 				}
 				
-				slider.valueAsNumber = value;
 				numberInput.valueAsNumber = value;
 				storeValue(value);
 				entry.update(value);
