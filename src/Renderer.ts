@@ -79,3 +79,7 @@ export function setPianoHeight(height: number) {
 	pianoHeight = height;
 	resize();
 }
+
+export function alignNotesToPiano(value: boolean) {
+	TimelineRenderer.alignNotesToPiano(value);
+}

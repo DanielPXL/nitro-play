@@ -3,7 +3,7 @@ import { interpolateNoteX } from "./PianoRenderer";
 import { SynthState } from "./SynthState";
 import { Audio } from "nitro-fs";
 
-export let pianoNotePositions = true;
+let alignNotes = true;
 
 export class TimelineRenderer {
 	constructor(canvas: HTMLCanvasElement) {
@@ -49,7 +49,7 @@ export class TimelineRenderer {
 						const noteWidth = this.canvas.width / noteRangeCount * note.volume;
 
 						let noteX: number;
-						if (pianoNotePositions) {
+						if (alignNotes) {
 							noteX = interpolateNoteX(note.note) - noteWidth / 2;
 						} else {
 							noteX = (note.note - noteRange[0]) / noteRangeCount * this.canvas.width - noteWidth / 2;
@@ -74,6 +74,10 @@ export class TimelineRenderer {
 		this.canvas.width = width;
 		this.canvas.height = height;
 		this.canvas.style.top = `${yPos}px`;
+	}
+
+	static alignNotesToPiano(value: boolean) {
+		alignNotes = value;
 	}
 }
 

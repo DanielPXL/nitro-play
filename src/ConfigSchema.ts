@@ -2,28 +2,34 @@ import * as Renderer from "./Renderer";
 
 const schema: ConfigSchema = [
 	{
-		title: "Playback",
-		entries: [
-
-		]
-	},
-	{
 		title: "Appearance",
 		entries: [
 			{
+				text: "Align notes to piano",
+				id: "alignNotesToPiano",
+				type: "checkbox",
+				default: true,
+				update: (value) => {
+					Renderer.alignNotesToPiano(value);
+				}
+			},
+			{
 				text: "Piano position",
+				id: "pianoPosition",
 				type: "slider",
-				default: 1,
+				default: 0.7,
 				min: 0,
 				max: 1,
+				forceRange: true,
 				update: (value) => {
 					Renderer.setPianoPosition(value);
 				}
 			},
 			{
 				text: "Piano height",
+				id: "pianoHeight",
 				type: "slider",
-				default: 0.2,
+				default: 0.1,
 				min: 0,
 				max: 0.8,
 				update: (value) => {
@@ -41,8 +47,9 @@ export type ConfigSchema = {
 	entries: ConfigEntry[]
 }[]
 
-type ConfigEntry = {
-	text: string
+export type ConfigEntry = {
+	text: string,
+	id: string
 } & ({
 	type: "checkbox",
 	default: boolean,
@@ -52,5 +59,7 @@ type ConfigEntry = {
 	default: number,
 	min: number,
 	max: number,
+	integer?: boolean,
+	forceRange?: boolean,
 	update: (value: number) => void
 })

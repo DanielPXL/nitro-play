@@ -32,6 +32,36 @@ dialog::backdrop {
 	border: 1px solid rgb(80, 80, 80);
 	padding: 12px;
 	border-radius: 8px;
+	overflow: auto;
+	height: calc(100% - 70px);
+}
+
+#openButton {
+	position: absolute;
+	top: 32px;
+	left: 32px;
+	width: 40px;
+	height: 40px;
+	z-index: 100;
+	cursor: pointer;
+}
+
+#closeButton {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+}
+
+section {
+	padding-bottom: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+h2, h3 {
+	margin: 0;
+	padding-bottom: 8px;
 }
 
 button {
@@ -113,17 +143,25 @@ span {
 	float: right;
 }
 
-.configRow {
+.playbackControls {
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	gap: 4px;
+}
+
+.volumeBar {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
-.configRow > * {
+.volumeBar > * {
 	margin-right: 8px;
+	white-space: nowrap;
 }
 
-.configRow > *:last-child {
+.volumeBar > *:last-child {
 	margin-right: 0;
 }
 
@@ -133,8 +171,37 @@ span {
 	cursor: pointer;
 }
 
-input[type="range"] {
+.configGroupGrid {
+	display: grid;
+	grid-template-columns: 1fr 2fr auto;
+	align-items: center;
+	grid-gap: 4px;
+}
+
+.configControl {
 	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 4px;
+}
+
+input[type="number"] {
+	background-color: rgb(80, 80, 80);
+	border: 1px solid rgb(80, 80, 80);
+	border-radius: 4px;
+	color: rgb(230, 230, 230);
+	font-size: 16px;
+	padding: 8px;
+	width: 80px;
+}
+
+input[type="range"] {
+	cursor: pointer;
+	width: 100%;
+}
+
+input[type="checkbox"] {
 	cursor: pointer;
 }
 

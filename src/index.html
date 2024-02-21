@@ -8,7 +8,10 @@
 		<script type="module" src="App.ts"></script>
 	</head>
 	<body>
+		<img id="openButton" src="assets/cog.svg" alt="Open Controls" />
 		<div id="controlPanel">
+			<button id="closeButton">X</button>
+
 			<section>
 				<h2>File Import</h2>
 				<button id="ndsFileImportButton">Import .nds</button>
@@ -30,26 +33,25 @@
 
 			<section>
 				<h2>Playback</h2>
-				<div class="configRow">
+				<div class="playbackControls">
 					<button id="seqLeftButton" disabled>&larr;</button>
 					<select id="seqSelect" disabled></select>
 					<button id="seqRightButton" disabled>&rarr;</button>
 				</div>
 
-				<div>
+				<div class="playbackControls">
 					<button id="seqPlayButton" disabled>Play</button>
 					<button id="seqStopButton" disabled>Stop</button>
 				</div>
 
-				<div class="configRow">
+				<div class="volumeBar">
 					<img id="speakerIcon" alt="Volume" />
 					<input type="range" id="volumeSlider" min="0" max="100" value="100"  />
 				</div>
 			</section>
 
 			<section id="config">
-				<h2>Configuration</h2>
-				
+				<h2>Configuration</h2>				
 			</section>
 		</div>
 
