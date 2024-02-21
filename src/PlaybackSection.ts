@@ -90,7 +90,7 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 	volumeSlider.addEventListener("input", () => {
 		changeSpeakerIcon();
 		localStorage.setItem(storagePrefix + "volume", volumeSlider.value);
-		AudioPlayer.setVolume((volumeSlider.valueAsNumber / 100) * 5);
+		AudioPlayer.setVolume((volumeSlider.valueAsNumber / 100) * 10);
 	});
 	volumeSlider.dispatchEvent(new Event("input"));
 
