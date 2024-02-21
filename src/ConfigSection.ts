@@ -131,6 +131,7 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 
 				numberInput.valueAsNumber = value;
 				slider.valueAsNumber = value;
+				storeValue(value);
 				entry.update(value);
 			}
 
