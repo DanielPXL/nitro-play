@@ -23,10 +23,8 @@ AudioWorkerComms.on("pcm", (data: Float32Array[]) => {
 
 async function load() {
 	acceptBuffers = true;
-	console.log("Before", AudioPlayer.startedBuffers.array(), AudioPlayer.queuedBuffers.array());
 	const s = await AudioWorkerComms.call("tickSeconds", { seconds: targetBufferHealth - AudioPlayer.getBufferHealth() });
 	StateManager.addStates(s);
-	console.log("After", AudioPlayer.startedBuffers.array(), AudioPlayer.queuedBuffers.array());
 }
 
 let tickInterval: number;
@@ -48,7 +46,7 @@ setInterval(() => {
 	// document.title = `Buffer health: ${AudioPlayer.getBufferHealth()}`;
 	// document.title = `States: ${StateManager.statesQueue.array().length}`;
 	// document.title = `Time: ${AudioPlayer.getTime()}`;
-	document.title = `Top time: ${StateManager.topTime()}`;
+	// document.title = `Top time: ${StateManager.topTime()}`;
 	StateManager.discardStates(StateManager.topTime() - targetBufferHealth * 2);
 }, 200);
 

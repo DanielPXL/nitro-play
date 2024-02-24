@@ -15,6 +15,10 @@ export class TimelineRenderer {
 	ctx: CanvasRenderingContext2D;
 
 	draw(colors: string[], time: number, noteRange: [Audio.Note, Audio.Note], timeRange: [number, number]) {
+		if (this.canvas.height === 0) {
+			return;
+		}
+
 		const noteRangeCount = noteRange[1] - noteRange[0];
 		const absoluteTimeRange = [timeRange[0] + time, timeRange[1] + time];
 	
@@ -71,6 +75,10 @@ export class TimelineRenderer {
 	}
 
 	resize(yPos: number, width: number, height: number) {
+		if (height < 0) {
+			height = 0;
+		}
+
 		this.canvas.width = width;
 		this.canvas.height = height;
 		this.canvas.style.top = `${yPos}px`;

@@ -79,10 +79,13 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 		
 		play();
 
+		document.title = `NitroPlay 🎵 ${seqSelect.value}`;
+
 		seqStopButton.disabled = false;
 	});
 
 	seqStopButton.addEventListener("click", async () => {
+		document.title = "NitroPlay";
 		stop();
 		await loadSeq();
 	});
