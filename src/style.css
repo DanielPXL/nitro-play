@@ -33,7 +33,7 @@ dialog::backdrop {
 	padding: 12px;
 	border-radius: 8px;
 	overflow: auto;
-	height: calc(100% - 70px);
+	height: 50%;
 }
 
 #openButton {
@@ -183,6 +183,7 @@ span {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	justify-content: right;
 	gap: 4px;
 }
 

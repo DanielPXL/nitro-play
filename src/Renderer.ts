@@ -4,18 +4,18 @@ import { Audio } from "nitro-fs"
 import * as PianoRenderer from "./PianoRenderer";
 import { TimelineRenderer } from "./TimelineRenderer";
 
-export let noteRange: [Audio.Note, Audio.Note] = [Audio.Note.CNegative1, Audio.Note.B8];
-export let pianoHeight = 0.1;
-export let pianoPosition = 0.7;
+let noteRange: [Audio.Note, Audio.Note] = [Audio.Note.CNegative1, Audio.Note.B8];
+let pianoHeight = 0.1;
+let pianoPosition = 0.7;
 
-export let colors = Array.from({ length: 16 }, (_, i) => `hsl(${i * 360 / 16}, 100%, 50%)`);
+let colors = Array.from({ length: 16 }, (_, i) => `hsl(${i * 360 / 16}, 100%, 50%)`);
 
 let topTimeline: TimelineRenderer; 
 let bottomTimeline: TimelineRenderer;
 
-export let topTime = 1.5;
-export let bottomTime = -1;
-export let bottomSameSpeed = true;
+let topTime = 1.5;
+let bottomTime = -1;
+let bottomSameSpeed = true;
 
 export function init() {
 	PianoRenderer.init();
@@ -82,4 +82,9 @@ export function setPianoHeight(height: number) {
 
 export function alignNotesToPiano(value: boolean) {
 	TimelineRenderer.alignNotesToPiano(value);
+}
+
+export function setPianoRange(value: [number, number]) {
+	noteRange = value;
+	PianoRenderer.drawKeys(noteRange[0], noteRange[1]);
 }

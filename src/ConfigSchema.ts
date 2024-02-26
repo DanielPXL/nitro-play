@@ -35,6 +35,15 @@ const schema: ConfigSchema = [
 				update: (value) => {
 					Renderer.setPianoHeight(value);
 				}
+			}, {
+				text: "Piano range",
+				id: "pianoRange",
+				type: "minmax",
+				default: [0, 119],
+				integer: true,
+				update: (value) => {
+					Renderer.setPianoRange(value);
+				}
 			}
 		]
 	}
@@ -62,4 +71,9 @@ export type ConfigEntry = {
 	integer?: boolean,
 	forceRange?: boolean,
 	update: (value: number) => void
+} | {
+	type: "minmax",
+	default: [number, number]
+	integer?: boolean,
+	update: (value: [number, number]) => void
 })

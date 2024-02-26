@@ -142,5 +142,63 @@ function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 
 			break;
 		}
+
+		case "minmax": {
+			const minInput = document.createElement("input");
+			const maxInput = document.createElement("input");
+
+			createResetButton(() => {
+				minInput.value = entry.default[0].toString();
+				minInput.dispatchEvent(new Event("input"));
+				maxInput.value = entry.default[1].toString();
+				maxInput.dispatchEvent(new Event("input"));
+			});
+
+			function oninput() {
+				// Thanks TypeScript (if we don't do this, entry.integer doesn't exist...)
+				if (entry.type !== "minmax") {
+					return;
+				}
+
+				let value: [number, number];
+				if (entry.integer) {
+					value = [Math.round(minInput.valueAsNumber), Math.round(maxInput.valueAsNumber)];
+				} else {
+					value = [minInput.valueAsNumber, maxInput.valueAsNumber];
+				}
+
+				storeValue(JSON.stringify(value));
+				entry.update(value);
+			}
+
+			minInput.type = "number";
+			minInput.value = storedValue !== null ? JSON.parse(storedValue)[0] : entry.default[0].toString();
+			minInput.step = entry.integer ? "1" : "0.01";
+			minInput.oninput = () => {
+				if (minInput.valueAsNumber > maxInput.valueAsNumber) {
+					maxInput.valueAsNumber = minInput.valueAsNumber;
+				}
+				oninput();
+			}
+
+			maxInput.type = "number";
+			maxInput.value = storedValue !== null ? JSON.parse(storedValue)[1] : entry.default[1].toString();
+			maxInput.step = entry.integer ? "1" : "0.01";
+			maxInput.oninput = () => {
+				if (maxInput.valueAsNumber < minInput.valueAsNumber) {
+					minInput.valueAsNumber = maxInput.valueAsNumber;
+				}
+				oninput();
+			}
+
+			controlDiv.appendChild(document.createTextNode("Min:"));
+			controlDiv.appendChild(minInput);
+			controlDiv.appendChild(document.createTextNode("Max:"));
+			controlDiv.appendChild(maxInput);
+
+			oninput();
+			
+			break;
+		}
 	}
 }
