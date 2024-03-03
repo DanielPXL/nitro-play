@@ -9,6 +9,7 @@
   "author": "",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@parcel/service-worker": "^2.12.0",
     "nitro-fs": "^1.1.0",
     "parcel": "^2.12.0"
   }

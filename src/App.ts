@@ -1,3 +1,4 @@
+import * as ServiceWorkerComms from "./ServiceWorkerComms";
 import * as AudioWorkerComms from "./AudioWorkerComms";
 import * as ControlPanel from "./ControlPanel";
 import * as AudioPlayer from "./AudioPlayer";
@@ -57,6 +58,7 @@ function stop() {
 	StateManager.discardStates(Infinity);
 }
 
+ServiceWorkerComms.init();
 AudioWorkerComms.init();
 Renderer.init();
 ControlPanel.init(load, start, stop);
