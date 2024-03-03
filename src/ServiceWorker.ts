@@ -3,9 +3,12 @@ import { version, manifest } from "@parcel/service-worker";
 declare const self: ServiceWorkerGlobalScope;
 
 async function install() {
+	// Remove duplicates from manifest because for some reason Parcel adds them
+	const manifestNoDupes = Array.from(new Set(manifest));
+
 	const cache = await caches.open(version);
-	await cache.addAll(manifest);
-	await cache.add("/");
+	await cache.addAll(manifestNoDupes);
+	await cache.add("");
 }
 
 self.addEventListener("install", (e: ExtendableEvent) => {
