@@ -62,5 +62,5 @@ function getVolume(playing: Audio.PlayingNote) {
 		+ Audio.ADSRConverter.convertSustain(playing.trackInfo.volume1)
 		+ Audio.ADSRConverter.convertSustain(playing.trackInfo.volume2);
 	
-	return (Audio.ADSRConverter.convertVolume(volume) / 127) * playing.modulationVolume;
+	return Audio.ADSRConverter.convertVolume(volume) * playing.modulationVolume;
 }
