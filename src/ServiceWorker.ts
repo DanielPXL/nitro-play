@@ -8,7 +8,7 @@ async function install() {
 
 	const cache = await caches.open(version);
 	await cache.addAll(manifestNoDupes);
-	await cache.add("");
+	await cache.add(self.location.href.replace(/\/[^/]*$/, "/"));
 }
 
 self.addEventListener("install", (e: ExtendableEvent) => {

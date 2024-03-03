@@ -7,7 +7,7 @@ export async function init() {
 		await navigator.serviceWorker.register(
 			new URL("ServiceWorker.ts", import.meta.url),
 			{
-				scope: document.location.pathname.replace(/\/[^/]*$/, "/"),
+				scope: document.location.href.replace(/\/[^/]*$/, "/"),
 				type: "module"
 			}
 		);
