@@ -30,6 +30,9 @@ self.addEventListener("activate", (e: ExtendableEvent) => {
 
 self.addEventListener("fetch", (e: FetchEvent) => {
 	if (e.request.method !== "GET") return;
+	// Don't cache requests for localhost
+	if (e.request.url.includes("localhost")) return;
+	if (e.request.url.includes("127.0.0.1")) return;
 	
 	async function getResponse() {
 		const cache = await caches.open(version);
