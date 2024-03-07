@@ -28,7 +28,7 @@ export function init() {
 	}
 }
 
-function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
+export function createEntry(entry: ConfigEntry, parent: HTMLElement, index: number) {
 	const text = document.createElement("div");
 	text.textContent = entry.text;
 	text.style.gridColumn = "1";

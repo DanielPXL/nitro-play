@@ -3,6 +3,10 @@ export async function init() {
 		console.error("Service workers are not supported in this browser.");
 	}
 
+	navigator.serviceWorker.addEventListener("message", (e) => {
+
+	});
+
 	try {
 		await navigator.serviceWorker.register(
 			new URL("ServiceWorker.ts", import.meta.url),
