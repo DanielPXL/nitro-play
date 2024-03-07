@@ -6,7 +6,7 @@ export type ControlSectionEntry = {
 } & ({
 	type: "checkbox",
 	default: boolean,
-	update: (value: boolean) => void
+	update?: (value: boolean) => void
 } | {
 	type: "slider",
 	default: number,
@@ -14,12 +14,12 @@ export type ControlSectionEntry = {
 	max: number,
 	integer?: boolean,
 	forceRange?: boolean,
-	update: (value: number) => void
+	update?: (value: number) => void
 } | {
 	type: "minmax",
 	default: [number, number]
 	integer?: boolean,
-	update: (value: [number, number]) => void
+	update?: (value: [number, number]) => void
 })
 
 export class ControlSection {
@@ -30,8 +30,13 @@ export class ControlSection {
 		this.createGrid(title, entries);
 	}
 
-	parent: HTMLElement;
-	storageTag: string
+	private parent: HTMLElement;
+	private storageTag: string
+	private values: Map<string, any> = new Map();
+
+	public get(id: string): any {
+		return this.values.get(id);
+	}
 
 	private createGrid(title: string, entries: ControlSectionEntry[]) {
 		const groupDiv = document.createElement("div");
@@ -83,6 +88,17 @@ export class ControlSection {
 			localStorage.setItem(key, value.toString());
 		}
 
+		// This is bad code but I don't care
+		// We need to copy this so we can use it in the function
+		const thisObject = this;
+		function updateEntry(value: any) {
+			thisObject.values.set(entry.id, value);
+			
+			if (entry.update) {
+				entry.update(value as never);
+			}
+		}
+
 		switch (entry.type) {
 			case "checkbox": {
 				const checkbox = document.createElement("input");
@@ -96,11 +112,11 @@ export class ControlSection {
 				checkbox.checked = storedValue !== null ? storedValue === "true" : entry.default;
 				checkbox.onchange = () => {
 					storeValue(checkbox.checked);
-					entry.update(checkbox.checked);
+					updateEntry(checkbox.checked);
 				}
 
 				controlDiv.appendChild(checkbox);
-				entry.update(storedValue !== null ? storedValue === "true" : entry.default);
+				updateEntry(storedValue !== null ? storedValue === "true" : entry.default);
 				break;
 			}
 
@@ -131,7 +147,7 @@ export class ControlSection {
 
 					numberInput.valueAsNumber = value;
 					storeValue(value);
-					entry.update(value);
+					updateEntry(value);
 				}
 
 				numberInput.type = "number";
@@ -157,13 +173,13 @@ export class ControlSection {
 
 					slider.valueAsNumber = value;
 					storeValue(value);
-					entry.update(value);
+					updateEntry(value);
 				}
 
 				controlDiv.appendChild(slider);
 				controlDiv.appendChild(numberInput);
 
-				entry.update(storedValue !== null ? +storedValue : entry.default);
+				updateEntry(storedValue !== null ? +storedValue : entry.default);
 
 				break;
 			}
@@ -193,7 +209,7 @@ export class ControlSection {
 					}
 
 					storeValue(JSON.stringify(value));
-					entry.update(value);
+					updateEntry(value);
 				}
 
 				minInput.type = "number";
