@@ -36,6 +36,14 @@ dialog::backdrop {
 	height: 50%;
 }
 
+#controlPanel > * {
+	margin-bottom: 16px;
+}
+
+#controlPanel > *:last-child {
+	margin-bottom: 0;
+}
+
 #openButton {
 	position: absolute;
 	top: 32px;
@@ -53,7 +61,6 @@ dialog::backdrop {
 }
 
 section {
-	padding-bottom: 16px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
@@ -171,14 +178,14 @@ span {
 	cursor: pointer;
 }
 
-.configGroupGrid {
+.controlGroupGrid {
 	display: grid;
 	grid-template-columns: 1fr 2fr auto;
 	align-items: center;
 	grid-gap: 4px;
 }
 
-.configControl {
+.controlEntry {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
