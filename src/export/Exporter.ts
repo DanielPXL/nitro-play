@@ -1,6 +1,8 @@
-import { ControlSectionEntry } from "../ControlSection";
+import { ControlSection, ControlSectionEntry } from "../ControlSection";
 
-abstract class Exporter {
-	abstract configSchema: ControlSectionEntry[];
-	abstract getStream(): ReadableStream;
+export interface Exporter {
+	name: string;
+	storageTag: string;
+	configSchema?: ControlSectionEntry[];
+	getStream(seqName: string, sampleRate: number, seconds: number, config: ControlSection): ReadableStream;
 }

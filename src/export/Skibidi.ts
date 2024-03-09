@@ -1,9 +1,17 @@
 import { Exporter } from "./Exporter";
 import { ControlSectionEntry } from "../ControlSection";
 
-export const waveExporter: Exporter = {
-	name: "Wave",
-	storageTag: "wave",
+export const skibidiExporter: Exporter = {
+	name: "Skibidi",
+	storageTag: "skibidi",
+	configSchema: [
+		{
+			type: "checkbox",
+			text: "Skibidi",
+			id: "skibidi",
+			default: true
+		}
+	],
 	getStream(seqName, sampleRate, seconds, config) {
 		let i = 0;
 

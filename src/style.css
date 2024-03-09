@@ -150,6 +150,26 @@ span {
 	float: right;
 }
 
+#exportDialog {
+	min-width: 40%;
+	min-height: 60%;
+}
+
+#exportConfigContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#exportControls {
+	overflow-y: scroll;
+}
+
+#exportMenuButtons {
+	display: flex;
+	justify-content: space-between;
+}
+
 .playbackControls {
 	display: flex;
 	align-items: center;

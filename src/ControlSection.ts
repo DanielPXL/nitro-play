@@ -20,6 +20,11 @@ export type ControlSectionEntry = {
 	default: [number, number]
 	integer?: boolean,
 	update?: (value: [number, number]) => void
+} | {
+	type: "select",
+	default: string,
+	options: string[],
+	update?: (value: string) => void
 })
 
 export class ControlSection {
@@ -239,6 +244,32 @@ export class ControlSection {
 
 				oninput();
 
+				break;
+			}
+
+			case "select": {
+				const select = document.createElement("select");
+
+				createResetButton(() => {
+					select.value = entry.default;
+					select.dispatchEvent(new Event("change"));
+				});
+
+				for (const option of entry.options) {
+					const optionElement = document.createElement("option");
+					optionElement.value = option;
+					optionElement.textContent = option;
+					select.appendChild(optionElement);
+				}
+
+				select.value = storedValue !== null ? storedValue : entry.default;
+				select.onchange = () => {
+					storeValue(select.value);
+					updateEntry(select.value);
+				}
+
+				controlDiv.appendChild(select);
+				updateEntry(storedValue !== null ? storedValue : entry.default);
 				break;
 			}
 		}
