@@ -1,14 +1,13 @@
-import * as ServiceWorkerComms from "../ServiceWorkerComms";
-import { ControlSection, ControlSectionEntry } from "../ControlSection"; 
-import { waveExporter } from "./WaveExporter";
-import { skibidiExporter } from "./Skibidi";
-
-const exporters = [
-	waveExporter,
-	skibidiExporter
-]
+import * as AudioWorkerComms from "../AudioWorkerComms";
+import { ControlSection, ControlSectionEntry } from "../ControlSection";
+import * as ProgressStatus from "./ProgressStatus";
+import { exporters, startStreamExport } from "./ExportManager";
 
 let exportDialog: HTMLDialogElement;
+let exportConfigContainer: HTMLDivElement;
+let exportStartContainer: HTMLDivElement;
+let exportStartButton: HTMLAnchorElement;
+
 let commonControls: ControlSection;
 const exportControls: (ControlSection | null)[] = [];
 const exportControlSections: HTMLElement[] = [];
@@ -54,13 +53,16 @@ export function init() {
 		e.preventDefault();
 	});
 
-	// document.getElementById("exportCancelButton")!.addEventListener("click", () => {
-	// 	exportDialog.close();
-	// });
+	exportConfigContainer = document.getElementById("exportConfigContainer") as HTMLDivElement;
+	exportStartContainer = document.getElementById("exportStartContainer") as HTMLDivElement;
 
-	// document.getElementById("exportContinueButton")!.addEventListener("click", () => {
+	document.getElementById("exportCancelButton")!.addEventListener("click", () => {
+		exportDialog.close();
+	});
 
-	// });
+	document.getElementById("exportContinueButton")!.addEventListener("click", async () => {
+		await continueExport();
+	});
 
 	// Create the control sections for each exporter first so that they can be controlled by the common controls
 	const exportControlsSection = exportDialog.querySelector("#exportControls") as HTMLElement;
@@ -80,8 +82,50 @@ export function init() {
 
 	const commonControlsSection = exportDialog.querySelector("#exportCommonControls") as HTMLElement;
 	commonControls = new ControlSection(commonControlsSection, "Export", "export_common", commonControlsSchema);
+
+	// Second part of the dialog
+	exportStartButton = document.getElementById("exportStartButton") as HTMLAnchorElement;
+	ProgressStatus.init();
+
+	exportStartButton.addEventListener("click", () => {
+		exportStartButton.style.display = "none";
+		ProgressStatus.show();
+	});
 }
 
-export function show() {
+export function showDialog() {
 	exportDialog.showModal();
+	exportStartButton.setAttribute("disabled", "true");
+	exportStartButton.style.display = "";
+}
+
+export function close() {
+	exportDialog.close();
+	exportConfigContainer.style.display = "";
+	exportStartContainer.style.display = "none";
+	ProgressStatus.hide();
+}
+
+export function enableStartButton(url: string, filename: string) {
+	exportStartButton.removeAttribute("disabled");
+	exportStartButton.href = url;
+	exportStartButton.download = filename;
+	exportStartButton.style.display = "";
+}
+
+async function continueExport() {
+	exportConfigContainer.style.display = "none";
+	exportStartContainer.style.display = "flex";
+	
+	const exporterName = commonControls.get("exportAs");
+	const exporterIndex = exporters.findIndex((e) => e.name === exporterName);
+
+	const seqName = await AudioWorkerComms.call("getCurrentSeqSymbol");
+	const sampleRate = commonControls.get("sampleRate");
+	const seconds = commonControls.get("seconds");
+	const configSection = exportControls[exporterIndex];
+
+	ProgressStatus.reset(seconds);
+	
+	await startStreamExport(exporterIndex, sampleRate, seconds, seqName, configSection);
 }

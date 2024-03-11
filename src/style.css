@@ -4,7 +4,7 @@ body {
 	font-family: sans-serif;
 	margin: 0;
 	overflow: hidden;
-	height: 100vh;
+	height: 100%;
 }
 
 dialog {
@@ -71,7 +71,7 @@ h2, h3 {
 	padding-bottom: 8px;
 }
 
-button {
+button, #exportStartButton {
 	background-color: rgb(80, 80, 80);
 	border: 1px solid rgb(80, 80, 80);
 	border-radius: 4px;
@@ -81,18 +81,22 @@ button {
 	padding: 8px;
 }
 
-button:hover {
+button:hover, #exportStartButton:hover {
 	background-color: rgb(100, 100, 100);
 }
 
-button:active {
+button:active, #exportStartButton {
 	background-color: rgb(60, 60, 60);
 }
 
-button:disabled {
+button:disabled, #exportStartButton[disabled=true] {
 	background-color: rgb(60, 60, 60);
 	color: rgb(150, 150, 150);
 	cursor: default;
+}
+
+#exportStartButton {
+	text-decoration: none;
 }
 
 select {
@@ -150,12 +154,8 @@ span {
 	float: right;
 }
 
-#exportDialog {
-	min-width: 40%;
-	min-height: 60%;
-}
-
 #exportConfigContainer {
+	min-width: 600px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -168,6 +168,24 @@ span {
 #exportMenuButtons {
 	display: flex;
 	justify-content: space-between;
+}
+
+#exportStartContainer {
+	display: none;
+	justify-content: center;
+}
+
+#exportProgress {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+progress {
+	width: 100%;
+	height: 20px;
+	padding-bottom: 8px;
 }
 
 .playbackControls {

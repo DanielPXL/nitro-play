@@ -33,14 +33,16 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 	});
 
 	ndsFileImportButton.addEventListener("click", () => {
+		exportButton.disabled = true;
 		PlaybackSection.disable();
 		FileImportDialog.show();
 	});
 
 	ExportDialog.init();
 
+	exportButton.disabled = true;
 	exportButton.addEventListener("click", () => {
-		ExportDialog.show();
+		ExportDialog.showDialog();
 	});
 
 	ConfigSection.init();

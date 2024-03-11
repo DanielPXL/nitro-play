@@ -28,9 +28,15 @@ self.addEventListener("activate", (e: ExtendableEvent) => {
 	e.waitUntil(self.clients.claim());
 });
 
-let streams: Map<string, ReadableStream> = new Map();
+interface Stream {
+	stream: ReadableStream;
+	headers: Record<string, string>;
+}
+
+let streams: Map<string, Stream> = new Map();
 
 self.addEventListener("fetch", (e: FetchEvent) => {
+	console.log("fetch", e.request.url);
 	if (e.request.method !== "GET") return;
 
 	// Stream downloads
@@ -38,7 +44,7 @@ self.addEventListener("fetch", (e: FetchEvent) => {
 	if (lastPartOfUrl && streams.has(lastPartOfUrl)) {
 		const stream = streams.get(lastPartOfUrl)!;
 		streams.delete(lastPartOfUrl);
-		e.respondWith(new Response(stream));
+		e.respondWith(new Response(stream.stream, { headers: new Headers(stream.headers) }));
 		return;
 	}
 
@@ -64,11 +70,21 @@ self.addEventListener("fetch", (e: FetchEvent) => {
 	e.respondWith(getResponse());
 });
 
-let handlers: Map<string, (data: any, respond: (data: any) => void) => void> = new Map();
+let handlers: Map<string, (data: any, call: (type: string, data: any) => Promise<any>) => void> = new Map();
+let callResponseHandlers: Map<number, (data: any) => void> = new Map();
+let callId = 0;
 
 addEventListener("message", (e: ExtendableMessageEvent) => {
-	function respond(data: any) {
-		e.source.postMessage(data);
+	function respond(type: string, data: any) {
+		const id = ++callId;
+		return new Promise<any>((resolve) => {
+			callResponseHandlers.set(id, (responseData) => {
+				callResponseHandlers.delete(id);
+				resolve(responseData);
+			});
+
+			e.source.postMessage({ type, data: { id, data } });
+		});
 	}
 
 	const data = e.data;
@@ -77,6 +93,48 @@ addEventListener("message", (e: ExtendableMessageEvent) => {
 	}
 });
 
-handlers.set("setStream", (data, respond) => {
-	streams.set("stream", data);
+handlers.set("callResponse", (data, call) => {
+	const id = data.id;
+	const handler = callResponseHandlers.get(id);
+	if (handler) {
+		handler(data.data);
+	}
+});
+
+handlers.set("setStream", (data, call) => {
+	const stream = new ReadableStream({
+		async start(controller) {
+			const { queue, shouldClose } = await call("streamStart", null);
+			for (const buf of queue) {
+				controller.enqueue(buf);
+			}
+
+			if (shouldClose) {
+				controller.close();
+			}
+		},
+		async pull(controller) {
+			const { queue, shouldClose } = await call("streamPull", null);
+			for (const buf of queue) {
+				controller.enqueue(buf);
+			}
+
+			if (shouldClose) {
+				controller.close();
+			}
+		},
+		async cancel() {
+			await call("streamCancel", null);
+		}
+	});
+
+	streams.set("stream", {
+		stream,
+		headers: data.headers
+	});
+
+	call("streamReady", {
+		url: self.location.href.replace(/\/[^/]*$/, "/") + "stream",
+		filename: data.filename
+	});
 });

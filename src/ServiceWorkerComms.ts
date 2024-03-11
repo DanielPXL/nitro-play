@@ -46,7 +46,11 @@ export function send(type: string, data: any, transfer?: Transferable[]) {
 	}
 
 	// Thanks TypeScript
-	navigator.serviceWorker.controller.postMessage({ type, data }, transfer as any);
+	try {
+		navigator.serviceWorker.controller.postMessage({ type, data }, transfer as any);
+	} catch (e) {
+		console.error("Service worker postMessage failed:", e);
+	}
 }
 
 export function on(type: string, handler: (data: any) => void) {

@@ -4,6 +4,7 @@ import * as ControlPanel from "./ControlPanel";
 import * as AudioPlayer from "./AudioPlayer";
 import * as StateManager from "./StateManager";
 import * as Renderer from "./Renderer";
+import * as ExportManager from "./export/ExportManager";
 import { SynthState } from "./SynthState";
 
 const targetBufferHealth = 3.0;
@@ -61,4 +62,5 @@ function stop() {
 ServiceWorkerComms.init();
 AudioWorkerComms.init();
 Renderer.init();
+ExportManager.init();
 ControlPanel.init(load, start, stop);

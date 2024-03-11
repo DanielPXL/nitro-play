@@ -41,7 +41,15 @@
 							<button id="exportCancelButton">Cancel</button>
 							<button id="exportContinueButton">Continue</button>
 						</div>
-						<!-- <a href="./stream" download="stream.wav">Start export</a> -->
+					</div>
+
+					<div id="exportStartContainer">
+						<a id="exportStartButton">Start Export</a>
+						<div id="exportProgress">
+							<progress id="exportProgressBar" value="0" max="1"></progress>
+							<span id="exportProgressPercentage"></span>
+							<span id="exportProgressAbsolute"></span>
+						</div>
 					</div>
 				</dialog>
 			</section>
