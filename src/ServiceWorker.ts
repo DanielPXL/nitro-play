@@ -128,12 +128,22 @@ handlers.set("setStream", (data, call) => {
 		}
 	});
 
-	streams.set("stream", {
+	function randomString(n: number) {
+		let str = "";
+		const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		for (let i = 0; i < n; i++) {
+			str += chars[Math.floor(Math.random() * chars.length)];
+		}
+		return str;
+	}
+
+	const streamId = randomString(16);
+	streams.set(`stream-${streamId}`, {
 		stream,
 		headers: data.headers
 	});
 
 	call("streamReady", {
-		url: self.location.href.replace(/\/[^/]*$/, "/") + "stream"
+		url: `${self.location.href.replace(/\/[^/]*$/, "/")}stream-${streamId}`
 	});
 });
