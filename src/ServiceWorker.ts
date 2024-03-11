@@ -134,7 +134,6 @@ handlers.set("setStream", (data, call) => {
 	});
 
 	call("streamReady", {
-		url: self.location.href.replace(/\/[^/]*$/, "/") + "stream",
-		filename: data.filename
+		url: self.location.href.replace(/\/[^/]*$/, "/") + "stream"
 	});
 });

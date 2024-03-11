@@ -11,7 +11,7 @@ export const exporters = [
 
 export function init() {
 	ServiceWorkerComms.on("streamReady", (data) => {
-		ExportDialog.enableStartButton(data.data.url, data.data.filename);
+		ExportDialog.enableStartButton(data.data.url);
 
 		ServiceWorkerComms.send("callResponse", {
 			id: data.id,
@@ -20,7 +20,12 @@ export function init() {
 	});
 }
 
-export async function startStreamExport(exporterIndex: number, sampleRate: number, seconds: number, seqName: string, configSection: ControlSection | null) {
+// TODO: This whole ServiceWorker stuff could be replaced with the
+// File System Access API (which is only available in Chromium).
+// Maybe check if it's available and use it instead.
+// https://web.dev/file-system-access/
+
+export async function prepareStreamExport(exporterIndex: number, sampleRate: number, seconds: number, seqName: string, configSection: ControlSection | null) {
 	const stream = exporters[exporterIndex].getStream(sampleRate, seconds, ProgressStatus.update, configSection);
 	await ServiceWorkerComms.ready;
 

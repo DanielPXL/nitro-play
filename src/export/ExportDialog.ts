@@ -1,7 +1,7 @@
 import * as AudioWorkerComms from "../AudioWorkerComms";
 import { ControlSection, ControlSectionEntry } from "../ControlSection";
 import * as ProgressStatus from "./ProgressStatus";
-import { exporters, startStreamExport } from "./ExportManager";
+import { exporters, prepareStreamExport } from "./ExportManager";
 
 let exportDialog: HTMLDialogElement;
 let exportConfigContainer: HTMLDivElement;
@@ -106,10 +106,9 @@ export function close() {
 	ProgressStatus.hide();
 }
 
-export function enableStartButton(url: string, filename: string) {
+export function enableStartButton(url: string) {
 	exportStartButton.removeAttribute("disabled");
 	exportStartButton.href = url;
-	exportStartButton.download = filename;
 	exportStartButton.style.display = "";
 }
 
@@ -127,5 +126,5 @@ async function continueExport() {
 
 	ProgressStatus.reset(seconds);
 	
-	await startStreamExport(exporterIndex, sampleRate, seconds, seqName, configSection);
+	await prepareStreamExport(exporterIndex, sampleRate, seconds, seqName, configSection);
 }
