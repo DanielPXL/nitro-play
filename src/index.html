@@ -13,8 +13,9 @@
 			<button id="closeButton">X</button>
 
 			<section>
-				<h2>File Import</h2>
+				<h2>File</h2>
 				<button id="ndsFileImportButton">Import .nds</button>
+				<button id="exportButton" disabled>Export</button>
 
 				<dialog id="ndsFileImportDialog">
 					<form id="importForm">
@@ -28,6 +29,28 @@
 					<span id="ndsSdatStatus"></span>
 
 					<button id="ndsImportButton" disabled>Import</button>
+				</dialog>
+
+				<dialog id="exportDialog">
+					<div id="exportConfigContainer">
+						<div id="exportControls">
+							<section id="exportCommonControls"></section>
+							<section id="exportControls"></section>
+						</div>
+						<div id="exportMenuButtons">
+							<button id="exportCancelButton">Cancel</button>
+							<button id="exportContinueButton">Continue</button>
+						</div>
+					</div>
+
+					<div id="exportStartContainer">
+						<a id="exportStartButton" target="_blank">Start Export</a>
+						<div id="exportProgress">
+							<progress id="exportProgressBar" value="0" max="1"></progress>
+							<span id="exportProgressPercentage"></span>
+							<span id="exportProgressAbsolute"></span>
+						</div>
+					</div>
 				</dialog>
 			</section>
 

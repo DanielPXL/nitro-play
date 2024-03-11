@@ -73,9 +73,11 @@ callables.set("getSeqSymbols", (data) => {
 	return sdat.fs.sequences.map((seq) => seq.name ? seq.name : `#${seq.id}`);
 });
 
+let curSeqSymbol: string;
 let renderer: Audio.SequenceRenderer;
 
 callables.set("loadSeq", (data) => {
+	curSeqSymbol = data.name;
 	renderer = new Audio.SequenceRenderer({
 		file: Audio.SequenceRenderer.makeInfoSSEQ(sdat, data.name.startsWith("#") ? parseInt(data.name.slice(1)) : data.name),
 		sampleRate: 48000,
@@ -84,6 +86,10 @@ callables.set("loadSeq", (data) => {
 		},
 		bufferLength: 1024 * 16
 	});
+});
+
+callables.set("getCurrentSeqSymbol", (data) => {
+	return curSeqSymbol;
 });
 
 callables.set("tickSeconds", (data) => {
@@ -96,4 +102,32 @@ callables.set("tickSeconds", (data) => {
 	}
 
 	return states;
+});
+
+let exportRenderer: Audio.SequenceRenderer;
+let exportBuffer: Float32Array[] | null = null;
+
+callables.set("startExport", (data) => {
+	exportRenderer = new Audio.SequenceRenderer({
+		file: Audio.SequenceRenderer.makeInfoSSEQ(sdat, (curSeqSymbol.startsWith("#") ? parseInt(curSeqSymbol.slice(1)) : curSeqSymbol) as any),
+		sampleRate: data.sampleRate,
+		sink(buffer) {
+			// Copy the buffers so they don't get overwritten
+			exportBuffer = [];
+			for (let i = 0; i < buffer.length; i++) {
+				exportBuffer.push(buffer[i].slice());
+			}
+		},
+		bufferLength: 1024 * 16
+	});
+});
+
+callables.set("exportTickUntilBuffer", (data) => {
+	while (exportBuffer === null) {
+		exportRenderer.tick();
+	}
+
+	const buffer = exportBuffer;
+	exportBuffer = null;
+	return buffer;
 });

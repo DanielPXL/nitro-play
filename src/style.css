@@ -4,7 +4,7 @@ body {
 	font-family: sans-serif;
 	margin: 0;
 	overflow: hidden;
-	height: 100vh;
+	height: 100%;
 }
 
 dialog {
@@ -36,6 +36,14 @@ dialog::backdrop {
 	height: 50%;
 }
 
+#controlPanel > * {
+	margin-bottom: 16px;
+}
+
+#controlPanel > *:last-child {
+	margin-bottom: 0;
+}
+
 #openButton {
 	position: absolute;
 	top: 32px;
@@ -53,7 +61,6 @@ dialog::backdrop {
 }
 
 section {
-	padding-bottom: 16px;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
@@ -64,7 +71,7 @@ h2, h3 {
 	padding-bottom: 8px;
 }
 
-button {
+button, #exportStartButton {
 	background-color: rgb(80, 80, 80);
 	border: 1px solid rgb(80, 80, 80);
 	border-radius: 4px;
@@ -74,18 +81,22 @@ button {
 	padding: 8px;
 }
 
-button:hover {
+button:hover, #exportStartButton:hover {
 	background-color: rgb(100, 100, 100);
 }
 
-button:active {
+button:active, #exportStartButton {
 	background-color: rgb(60, 60, 60);
 }
 
-button:disabled {
+button:disabled, #exportStartButton[disabled=true] {
 	background-color: rgb(60, 60, 60);
 	color: rgb(150, 150, 150);
 	cursor: default;
+}
+
+#exportStartButton {
+	text-decoration: none;
 }
 
 select {
@@ -143,6 +154,40 @@ span {
 	float: right;
 }
 
+#exportConfigContainer {
+	min-width: 600px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+#exportControls {
+	overflow-y: scroll;
+}
+
+#exportMenuButtons {
+	display: flex;
+	justify-content: space-between;
+}
+
+#exportStartContainer {
+	display: none;
+	justify-content: center;
+}
+
+#exportProgress {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+progress {
+	width: 100%;
+	height: 20px;
+	padding-bottom: 8px;
+}
+
 .playbackControls {
 	display: flex;
 	align-items: center;
@@ -171,14 +216,14 @@ span {
 	cursor: pointer;
 }
 
-.configGroupGrid {
+.controlGroupGrid {
 	display: grid;
 	grid-template-columns: 1fr 2fr auto;
 	align-items: center;
 	grid-gap: 4px;
 }
 
-.configControl {
+.controlEntry {
 	width: 100%;
 	display: flex;
 	flex-direction: row;

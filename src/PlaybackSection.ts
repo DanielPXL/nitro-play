@@ -1,6 +1,6 @@
 import * as AudioWorkerComms from "./AudioWorkerComms";
 import * as AudioPlayer from "./AudioPlayer";
-import { storagePrefix } from "./ConfigSection";
+import { storagePrefix } from "./ControlSection";
 
 const speaker0 = new URL("./assets/speaker0.svg", import.meta.url).href;
 const speaker1 = new URL("./assets/speaker1.svg", import.meta.url).href;
@@ -92,7 +92,7 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 
 	volumeSlider.addEventListener("input", () => {
 		changeSpeakerIcon();
-		localStorage.setItem(storagePrefix + "volume", volumeSlider.value);
+		localStorage.setItem(storagePrefix + "_volume", volumeSlider.value);
 		AudioPlayer.setVolume((volumeSlider.valueAsNumber / 100) * 10);
 	});
 	volumeSlider.dispatchEvent(new Event("input"));
@@ -107,7 +107,7 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 		volumeSlider.dispatchEvent(new Event("input"));
 	});
 
-	const storedVolume = localStorage.getItem(storagePrefix + "volume");
+	const storedVolume = localStorage.getItem(storagePrefix + "_volume");
 	volumeSlider.value = storedVolume !== null ? storedVolume : "100";
 	volumeSlider.dispatchEvent(new Event("input"));
 }
