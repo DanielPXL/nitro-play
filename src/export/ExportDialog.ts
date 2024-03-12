@@ -106,9 +106,18 @@ export function close() {
 	ProgressStatus.hide();
 }
 
-export function enableStartButton(url: string) {
+export function enableStartButton(url: string, filename: string) {
 	exportStartButton.removeAttribute("disabled");
 	exportStartButton.href = url;
+
+	// For some reason, setting the download attribute prevents the download from
+	// being intercepted by the service worker in Chromium. And not setting it does
+	// some weird stuff in Safari. So we only set it if we're not in Chromium.
+	const isChromium = "chrome" in window;
+	if (!isChromium) {
+		exportStartButton.download = filename;
+	}
+
 	exportStartButton.style.display = "";
 }
 

@@ -11,7 +11,7 @@ export const exporters = [
 
 export function init() {
 	ServiceWorkerComms.on("streamReady", (data) => {
-		ExportDialog.enableStartButton(data.data.url);
+		ExportDialog.enableStartButton(data.data.url, data.data.filename);
 
 		ServiceWorkerComms.send("callResponse", {
 			id: data.id,

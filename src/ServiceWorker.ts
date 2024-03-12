@@ -36,7 +36,6 @@ interface Stream {
 let streams: Map<string, Stream> = new Map();
 
 self.addEventListener("fetch", (e: FetchEvent) => {
-	console.log("fetch", e.request.url);
 	if (e.request.method !== "GET") return;
 
 	// Stream downloads
@@ -144,6 +143,7 @@ handlers.set("setStream", (data, call) => {
 	});
 
 	call("streamReady", {
-		url: `${self.location.href.replace(/\/[^/]*$/, "/")}stream-${streamId}`
+		url: `${self.location.href.replace(/\/[^/]*$/, "/")}stream-${streamId}`,
+		filename: data.filename
 	});
 });
