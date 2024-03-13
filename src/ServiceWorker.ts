@@ -101,7 +101,7 @@ handlers.set("callResponse", (data, call) => {
 });
 
 handlers.set("setStream", (data, call) => {
-	const stream = new ReadableStream({
+	let stream = new ReadableStream({
 		async start(controller) {
 			const { queue, shouldClose } = await call("streamStart", null);
 			for (const buf of queue) {
@@ -126,6 +126,10 @@ handlers.set("setStream", (data, call) => {
 			await call("streamCancel", null);
 		}
 	});
+
+	if (data.compress) {
+		stream = stream.pipeThrough(new CompressionStream("gzip"));
+	}
 
 	function randomString(n: number) {
 		let str = "";

@@ -44,6 +44,12 @@ const commonControlsSchema: ControlSectionEntry[] = [
 		min: 1,
 		max: 600,
 		default: 60
+	},
+	{
+		type: "checkbox",
+		text: "Compress (as .gz)",
+		id: "compress",
+		default: true
 	}
 ]
 
@@ -131,9 +137,10 @@ async function continueExport() {
 	const seqName = await AudioWorkerComms.call("getCurrentSeqSymbol");
 	const sampleRate = commonControls.get("sampleRate");
 	const seconds = commonControls.get("seconds");
+	const compress = commonControls.get("compress");
 	const configSection = exportControls[exporterIndex];
 
 	ProgressStatus.reset(seconds);
 	
-	await prepareStreamExport(exporterIndex, sampleRate, seconds, seqName, configSection);
+	await prepareStreamExport(exporterIndex, sampleRate, seconds, compress, seqName, configSection);
 }

@@ -27,7 +27,7 @@ export function init() {
 // Maybe check if it's available and use it instead.
 // https://web.dev/file-system-access/
 
-export async function prepareStreamExport(exporterIndex: number, sampleRate: number, seconds: number, seqName: string, configSection: ControlSection | null) {
+export async function prepareStreamExport(exporterIndex: number, sampleRate: number, seconds: number, compress: boolean, seqName: string, configSection: ControlSection | null) {
 	const stream = exporters[exporterIndex].getStream(sampleRate, seconds, ProgressStatus.update, configSection);
 	await ServiceWorkerComms.ready;
 
@@ -96,11 +96,17 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 		});
 	});
 	
+	let filename = `${seqName}.${exporters[exporterIndex].fileExtension}`;
+	if (compress) {
+		filename += ".gz";
+	}
+
 	ServiceWorkerComms.send("setStream", {
-		filename: `${seqName}.${exporters[exporterIndex].fileExtension}`,
+		filename,
+		compress,
 		headers: {
-			"Content-Type": exporters[exporterIndex].mimeType,
-			"Content-Disposition": `attachment; filename="${seqName}.${exporters[exporterIndex].fileExtension}"`
+			"Content-Type": compress ? "application/gzip" : exporters[exporterIndex].mimeType,
+			"Content-Disposition": `attachment; filename="${filename}"`
 		}
 	});
 }
