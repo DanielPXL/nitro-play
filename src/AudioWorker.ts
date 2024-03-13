@@ -118,7 +118,8 @@ callables.set("startExport", (data) => {
 				exportBuffer.push(buffer[i].slice());
 			}
 		},
-		bufferLength: 1024 * 16
+		bufferLength: 1024 * 16,
+		activeTracks: data.activeTracks ? data.activeTracks : 0xFFFF
 	});
 });
 
@@ -130,4 +131,14 @@ callables.set("exportTickUntilBuffer", (data) => {
 	const buffer = exportBuffer;
 	exportBuffer = null;
 	return buffer;
+});
+
+callables.set("exportFindAllocatedTracks", (data) => {
+	let tracks = 0xFFFF;
+	const cmd = exportRenderer.commands[0];
+	if (cmd instanceof Audio.Commands.AllocateTracks) {
+		tracks = cmd.tracks;
+	}
+	
+	return tracks;
 });

@@ -1,3 +1,7 @@
+export function getFileSize(numSamples: number, numChannels: number) {
+	return 44 + numSamples * numChannels * 4;
+}
+
 export function header(numSamples: number, numChannels: number, sampleRate: number) {
 	const buffer = new ArrayBuffer(44);
 	const view = new DataView(buffer);

@@ -1,12 +1,14 @@
 import { StreamSourceController } from "./Exporter";
-import { waveExporter } from "./wave/WaveExporter";
 import * as ServiceWorkerComms from "../ServiceWorkerComms";
 import * as ExportDialog from "./ExportDialog";
 import * as ProgressStatus from "./ProgressStatus";
 import { ControlSection } from "../ControlSection";
+import { waveExporter } from "./wave/WaveExporter";
+import { wavePerChannelExporter } from "./wavePerChannel/WavePerChannelExporter";
 
 export const exporters = [
-	waveExporter
+	waveExporter,
+	wavePerChannelExporter
 ]
 
 export function init() {
