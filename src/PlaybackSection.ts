@@ -95,7 +95,6 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 		localStorage.setItem(storagePrefix + "_volume", volumeSlider.value);
 		AudioPlayer.setVolume((volumeSlider.valueAsNumber / 100) * 10);
 	});
-	volumeSlider.dispatchEvent(new Event("input"));
 
 	speakerIcon.addEventListener("click", () => {
 		if (volumeSlider.valueAsNumber === 0) {
