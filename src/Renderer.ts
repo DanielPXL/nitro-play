@@ -69,33 +69,26 @@ export function resize() {
 	}
 }
 
-function render(time: DOMHighResTimeStamp) {
-	if (true) {
-		topTimeline.draw(colors, AudioPlayer.getTime(), noteRange, [
-			0,
-			topTime
-		]);
-		bottomTimeline.draw(colors, AudioPlayer.getTime(), noteRange, [
-			bottomTime,
-			0
-		]);
+function render() {
+	const time = AudioPlayer.getTime();
+	topTimeline.draw(colors, time, noteRange, [0, topTime]);
+	bottomTimeline.draw(colors, time, noteRange, [bottomTime, 0]);
 
-		const state = StateManager.getState(AudioPlayer.getTime());
-		if (state) {
-			PianoRenderer.clearNotes();
-			for (let i = 0; i < state.channels.length; i++) {
-				const channel = state.channels[i];
-				for (const note of channel.playing) {
-					if (note.state === Audio.EnvelopeState.Release) {
-						continue;
-					}
-
-					PianoRenderer.drawNote(
-						Math.round(note.note),
-						note.volume,
-						colors[i]
-					);
+	const state = StateManager.getState(time);
+	PianoRenderer.clearNotes();
+	if (state) {
+		for (let i = 0; i < state.channels.length; i++) {
+			const channel = state.channels[i];
+			for (const note of channel.playing) {
+				if (note.state === Audio.EnvelopeState.Release) {
+					continue;
 				}
+
+				PianoRenderer.drawNote(
+					Math.round(note.note),
+					note.volume,
+					colors[i]
+				);
 			}
 		}
 	}
