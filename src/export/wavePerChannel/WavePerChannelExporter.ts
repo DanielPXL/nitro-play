@@ -28,41 +28,63 @@ export const wavePerChannelExporter: Exporter = {
 		const stream: StreamSource = {
 			async start(controller) {
 				await AudioWorkerComms.call("startExport", { sampleRate });
-				const allocatedTracks = await AudioWorkerComms.call("exportFindAllocatedTracks");
+				const allocatedTracks = await AudioWorkerComms.call(
+					"exportFindAllocatedTracks"
+				);
 				tracksToExport = trackBitmaskToArray(allocatedTracks);
 
-				const tarHeader = tar.fileHeader("master.wav", WaveFile.getFileSize(numSamples, 2), new Date());
+				const tarHeader = tar.fileHeader(
+					"master.wav",
+					WaveFile.getFileSize(numSamples, 2),
+					new Date()
+				);
 				controller.enqueue(tarHeader);
 
 				const waveHeader = WaveFile.header(numSamples, 2, sampleRate);
 				controller.enqueue(tar.fileData(waveHeader));
 			},
 			async pull(controller) {
-				const pcmBuf: Float32Array[] = await AudioWorkerComms.call("exportTickUntilBuffer");
+				const pcmBuf: Float32Array[] = await AudioWorkerComms.call(
+					"exportTickUntilBuffer"
+				);
 				const interleavedBuf = WaveFile.interleave(pcmBuf);
-				
+
 				i += pcmBuf[0].length;
 				if (i > numSamples) {
 					// Done with the current file, strip the data that's above the size of the file
 					const samplesToRemove = i - numSamples;
-					const newBuf = interleavedBuf.slice(0, interleavedBuf.length - samplesToRemove * 2);
+					const newBuf = interleavedBuf.slice(
+						0,
+						interleavedBuf.length - samplesToRemove * 2
+					);
 					const byteBuf = new Uint8Array(newBuf.buffer);
 
 					controller.enqueue(tar.fileData(byteBuf));
 					controller.enqueue(tar.fileEnd());
-					
+
 					if (trackIndex < tracksToExport.length - 1) {
 						// Start the next track
 						trackIndex++;
-						await AudioWorkerComms.call("startExport", { sampleRate, activeTracks: 1 << tracksToExport[trackIndex] });
+						await AudioWorkerComms.call("startExport", {
+							sampleRate,
+							activeTracks: 1 << tracksToExport[trackIndex]
+						});
 						i = 0;
 
 						// Add the header for the next track
 						const trackName = `track${tracksToExport[trackIndex]}.wav`;
-						const tarHeader = tar.fileHeader(trackName, WaveFile.getFileSize(numSamples, 2), new Date());
+						const tarHeader = tar.fileHeader(
+							trackName,
+							WaveFile.getFileSize(numSamples, 2),
+							new Date()
+						);
 						controller.enqueue(tarHeader);
 
-						const waveHeader = WaveFile.header(numSamples, 2, sampleRate);
+						const waveHeader = WaveFile.header(
+							numSamples,
+							2,
+							sampleRate
+						);
 						controller.enqueue(tar.fileData(waveHeader));
 					} else {
 						// All tracks are done
@@ -75,14 +97,15 @@ export const wavePerChannelExporter: Exporter = {
 
 					// Assumes that the buffer is a multiple of 512 bytes (which it is, see AudioWorker)
 					controller.enqueue(tar.fileData(byteBuf));
-					onProgress((i / numSamples + trackIndex + 1) / (tracksToExport.length + 1));
+					onProgress(
+						(i / numSamples + trackIndex + 1) /
+							(tracksToExport.length + 1)
+					);
 				}
 			},
-			cancel() {
-				
-			}
+			cancel() {}
 		};
 
 		return stream;
 	}
-}
+};

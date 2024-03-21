@@ -25,7 +25,9 @@ AudioWorkerComms.on("pcm", (data: Float32Array[]) => {
 
 async function load() {
 	acceptBuffers = true;
-	const s = await AudioWorkerComms.call("tickSeconds", { seconds: targetBufferHealth - AudioPlayer.getBufferHealth() });
+	const s = await AudioWorkerComms.call("tickSeconds", {
+		seconds: targetBufferHealth - AudioPlayer.getBufferHealth()
+	});
 	StateManager.addStates(s);
 }
 
@@ -34,9 +36,11 @@ function start() {
 	// Assumes load has already been called
 	AudioPlayer.start();
 	tickInterval = setInterval(async () => {
-		if (AudioPlayer.getBufferHealth() < targetBufferHealth)
-		{
-			const states: SynthState[] = await AudioWorkerComms.call("tickSeconds", { seconds: targetBufferHealth - AudioPlayer.getBufferHealth() });
+		if (AudioPlayer.getBufferHealth() < targetBufferHealth) {
+			const states: SynthState[] = await AudioWorkerComms.call(
+				"tickSeconds",
+				{ seconds: targetBufferHealth - AudioPlayer.getBufferHealth() }
+			);
 			if (acceptBuffers) {
 				StateManager.addStates(states);
 			}

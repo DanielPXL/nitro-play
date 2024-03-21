@@ -8,15 +8,21 @@ onmessage = (e) => {
 	if (handlers.has(e.data.type)) {
 		handlers.get(e.data.type)!(e.data.data);
 	}
-}
+};
 
 handlers.set("call", (data) => {
 	if (callables.has(data.type)) {
 		try {
 			const result = callables.get(data.type)!(data.data);
-			postMessage({ type: "call", data: { id: data.id, data: { data: result } } });
+			postMessage({
+				type: "call",
+				data: { id: data.id, data: { data: result } }
+			});
 		} catch (err) {
-			postMessage({ type: "call", data: { id: data.id, data: { err: err } } });
+			postMessage({
+				type: "call",
+				data: { id: data.id, data: { err: err } }
+			});
 		}
 	}
 });
@@ -25,11 +31,11 @@ let sdat: Audio.SDAT;
 
 callables.set("parseNds", (data) => {
 	const fs = NitroFS.fromRom(data);
-	
+
 	// Recursively search for .sdat files
 	let sdats: string[] = [];
 	function look(path: string) {
-		const {files, directories} = fs.readDir(path);
+		const { files, directories } = fs.readDir(path);
 		for (const file of files) {
 			if (file.endsWith(".sdat")) {
 				if (path === "") {
@@ -70,7 +76,7 @@ callables.set("useSdat", (data) => {
 });
 
 callables.set("getSeqSymbols", (data) => {
-	return sdat.fs.sequences.map((seq) => seq.name ? seq.name : `#${seq.id}`);
+	return sdat.fs.sequences.map((seq) => (seq.name ? seq.name : `#${seq.id}`));
 });
 
 let curSeqSymbol: string;
@@ -79,10 +85,13 @@ let renderer: Audio.SequenceRenderer;
 callables.set("loadSeq", (data) => {
 	curSeqSymbol = data.name;
 	renderer = new Audio.SequenceRenderer({
-		file: Audio.SequenceRenderer.makeInfoSSEQ(sdat, data.name.startsWith("#") ? parseInt(data.name.slice(1)) : data.name),
+		file: Audio.SequenceRenderer.makeInfoSSEQ(
+			sdat,
+			data.name.startsWith("#") ? parseInt(data.name.slice(1)) : data.name
+		),
 		sampleRate: 48000,
 		sink(buffer) {
-			postMessage({ type: "pcm", data: buffer});
+			postMessage({ type: "pcm", data: buffer });
 		},
 		bufferLength: 1024 * 16
 	});
@@ -93,7 +102,9 @@ callables.set("getCurrentSeqSymbol", (data) => {
 });
 
 callables.set("tickSeconds", (data) => {
-	const states: SynthState[] = Array(Math.ceil(48000 * data.seconds / renderer.samplesPerTick));
+	const states: SynthState[] = Array(
+		Math.ceil((48000 * data.seconds) / renderer.samplesPerTick)
+	);
 	let o = 0;
 	for (let i = 0; i < 48000 * data.seconds; i += renderer.samplesPerTick) {
 		renderer.tick();
@@ -109,7 +120,12 @@ let exportBuffer: Float32Array[] | null = null;
 
 callables.set("startExport", (data) => {
 	exportRenderer = new Audio.SequenceRenderer({
-		file: Audio.SequenceRenderer.makeInfoSSEQ(sdat, (curSeqSymbol.startsWith("#") ? parseInt(curSeqSymbol.slice(1)) : curSeqSymbol) as any),
+		file: Audio.SequenceRenderer.makeInfoSSEQ(
+			sdat,
+			(curSeqSymbol.startsWith("#")
+				? parseInt(curSeqSymbol.slice(1))
+				: curSeqSymbol) as any
+		),
 		sampleRate: data.sampleRate,
 		sink(buffer) {
 			// Copy the buffers so they don't get overwritten
@@ -119,7 +135,7 @@ callables.set("startExport", (data) => {
 			}
 		},
 		bufferLength: 1024 * 16,
-		activeTracks: data.activeTracks ? data.activeTracks : 0xFFFF
+		activeTracks: data.activeTracks ? data.activeTracks : 0xffff
 	});
 });
 
@@ -134,11 +150,11 @@ callables.set("exportTickUntilBuffer", (data) => {
 });
 
 callables.set("exportFindAllocatedTracks", (data) => {
-	let tracks = 0xFFFF;
+	let tracks = 0xffff;
 	const cmd = exportRenderer.commands[0];
 	if (cmd instanceof Audio.Commands.AllocateTracks) {
 		tracks = cmd.tracks;
 	}
-	
+
 	return tracks;
 });

@@ -6,10 +6,7 @@ import { ControlSection } from "../ControlSection";
 import { waveExporter } from "./wave/WaveExporter";
 import { wavePerChannelExporter } from "./wavePerChannel/WavePerChannelExporter";
 
-export const exporters = [
-	waveExporter,
-	wavePerChannelExporter
-]
+export const exporters = [waveExporter, wavePerChannelExporter];
 
 export function init() {
 	ServiceWorkerComms.on("streamReady", (data) => {
@@ -27,8 +24,20 @@ export function init() {
 // Maybe check if it's available and use it instead.
 // https://web.dev/file-system-access/
 
-export async function prepareStreamExport(exporterIndex: number, sampleRate: number, seconds: number, compress: boolean, seqName: string, configSection: ControlSection | null) {
-	const stream = exporters[exporterIndex].getStream(sampleRate, seconds, ProgressStatus.update, configSection);
+export async function prepareStreamExport(
+	exporterIndex: number,
+	sampleRate: number,
+	seconds: number,
+	compress: boolean,
+	seqName: string,
+	configSection: ControlSection | null
+) {
+	const stream = exporters[exporterIndex].getStream(
+		sampleRate,
+		seconds,
+		ProgressStatus.update,
+		configSection
+	);
 	await ServiceWorkerComms.ready;
 
 	ServiceWorkerComms.on("streamStart", async (callData) => {
@@ -43,9 +52,9 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 				ExportDialog.close();
 				shouldClose = true;
 			}
-		}
+		};
 
-		await Promise.resolve(stream.start(controller))
+		await Promise.resolve(stream.start(controller));
 
 		ServiceWorkerComms.send("callResponse", {
 			id: callData.id,
@@ -68,9 +77,9 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 				ExportDialog.close();
 				shouldClose = true;
 			}
-		}
+		};
 
-		await Promise.resolve(stream.pull(controller))
+		await Promise.resolve(stream.pull(controller));
 
 		ServiceWorkerComms.send("callResponse", {
 			id: callData.id,
@@ -82,7 +91,7 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 	});
 
 	ServiceWorkerComms.on("streamCancel", async (callData) => {
-		await Promise.resolve(stream.cancel())
+		await Promise.resolve(stream.cancel());
 
 		ServiceWorkerComms.off("streamStart");
 		ServiceWorkerComms.off("streamPull");
@@ -95,7 +104,7 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 			data: null
 		});
 	});
-	
+
 	let filename = `${seqName}.${exporters[exporterIndex].fileExtension}`;
 	if (compress) {
 		filename += ".gz";
@@ -105,7 +114,9 @@ export async function prepareStreamExport(exporterIndex: number, sampleRate: num
 		filename,
 		compress,
 		headers: {
-			"Content-Type": compress ? "application/gzip" : exporters[exporterIndex].mimeType,
+			"Content-Type": compress
+				? "application/gzip"
+				: exporters[exporterIndex].mimeType,
 			"Content-Disposition": `attachment; filename="${filename}"`
 		}
 	});

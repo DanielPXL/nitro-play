@@ -11,13 +11,17 @@ let importButton: HTMLButtonElement;
 let buffer: ArrayBuffer | null;
 
 export function init(useSdatCallback: () => void) {
-	dialog = document.getElementById("ndsFileImportDialog") as HTMLDialogElement;
+	dialog = document.getElementById(
+		"ndsFileImportDialog"
+	) as HTMLDialogElement;
 	fileInput = document.getElementById("ndsFileInput") as HTMLInputElement;
 	fileName = document.getElementById("ndsFileName") as HTMLSpanElement;
 	fileStatus = document.getElementById("ndsImportStatus") as HTMLSpanElement;
 	sdatSelect = document.getElementById("ndsSdatSelect") as HTMLSelectElement;
 	sdatStatus = document.getElementById("ndsSdatStatus") as HTMLSpanElement;
-	importButton = document.getElementById("ndsImportButton") as HTMLButtonElement;
+	importButton = document.getElementById(
+		"ndsImportButton"
+	) as HTMLButtonElement;
 
 	fileInput.addEventListener("change", async () => {
 		fileName.textContent = fileInput.files![0].name;
@@ -51,7 +55,10 @@ export function init(useSdatCallback: () => void) {
 		const sdatPath = sdatSelect.value;
 
 		try {
-			const numSequences = await AudioWorkerComms.call("checkSdat", { rom: buffer, path: sdatPath });
+			const numSequences = await AudioWorkerComms.call("checkSdat", {
+				rom: buffer,
+				path: sdatPath
+			});
 			sdatStatus.textContent = `✅ ${numSequences} sequences`;
 		} catch (err) {
 			sdatStatus.textContent = "❌";
@@ -68,7 +75,10 @@ export function init(useSdatCallback: () => void) {
 		sdatSelect.disabled = true;
 		importButton.disabled = true;
 
-		await AudioWorkerComms.call("useSdat", { rom: buffer, path: sdatSelect.value })
+		await AudioWorkerComms.call("useSdat", {
+			rom: buffer,
+			path: sdatSelect.value
+		});
 		useSdatCallback();
 
 		dialog.close();

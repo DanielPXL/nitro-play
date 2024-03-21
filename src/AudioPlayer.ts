@@ -22,7 +22,11 @@ export function init() {
 }
 
 export function addPCM(data: Float32Array[]) {
-	const audioBuffer = ctx.createBuffer(data.length, data[0].length, sampleRate);
+	const audioBuffer = ctx.createBuffer(
+		data.length,
+		data[0].length,
+		sampleRate
+	);
 	for (let i = 0; i < data.length; i++) {
 		audioBuffer.copyToChannel(data[i], i);
 	}
@@ -52,7 +56,7 @@ function startBuffer(source: AudioBufferSourceNode) {
 
 	startedBuffers.enqueue(source);
 	source.addEventListener("ended", () => {
-		startedBuffers.remove(s => s === source);
+		startedBuffers.remove((s) => s === source);
 	});
 }
 
@@ -106,6 +110,6 @@ export function setVolume(volume: number) {
 		supposedGain = volume;
 		return;
 	}
-	
+
 	gain.gain.value = volume;
 }

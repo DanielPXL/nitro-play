@@ -5,7 +5,12 @@ export function init() {
 	const configSection = document.getElementById("config") as HTMLDivElement;
 
 	for (const configGroup of schema) {
-		new ControlSection(configSection, configGroup.title, "config", configGroup.entries);
+		new ControlSection(
+			configSection,
+			configGroup.title,
+			"config",
+			configGroup.entries
+		);
 	}
 }
 
@@ -44,7 +49,8 @@ const schema: ConfigSchema = [
 				update: (value) => {
 					Renderer.setPianoHeight(value);
 				}
-			}, {
+			},
+			{
 				text: "Piano range",
 				id: "pianoRange",
 				type: "minmax",
@@ -56,9 +62,9 @@ const schema: ConfigSchema = [
 			}
 		]
 	}
-]
+];
 
 type ConfigSchema = {
-	title: string,
-	entries: ControlSectionEntry[]
-}[]
+	title: string;
+	entries: ControlSectionEntry[];
+}[];

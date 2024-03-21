@@ -11,7 +11,6 @@ export let ready = new Promise<void>((resolve) => {
 	readyResolve = resolve;
 });
 
-
 export async function init() {
 	if (!("serviceWorker" in navigator)) {
 		console.error("Service workers are not supported in this browser.");
@@ -47,7 +46,10 @@ export function send(type: string, data: any, transfer?: Transferable[]) {
 
 	// Thanks TypeScript
 	try {
-		navigator.serviceWorker.controller.postMessage({ type, data }, transfer as any);
+		navigator.serviceWorker.controller.postMessage(
+			{ type, data },
+			transfer as any
+		);
 	} catch (e) {
 		console.error("Service worker postMessage failed:", e);
 	}

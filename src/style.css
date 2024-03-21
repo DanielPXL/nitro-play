@@ -66,12 +66,14 @@ section {
 	gap: 8px;
 }
 
-h2, h3 {
+h2,
+h3 {
 	margin: 0;
 	padding-bottom: 8px;
 }
 
-button, #exportStartButton {
+button,
+#exportStartButton {
 	background-color: rgb(80, 80, 80);
 	border: 1px solid rgb(80, 80, 80);
 	border-radius: 4px;
@@ -81,15 +83,18 @@ button, #exportStartButton {
 	padding: 8px;
 }
 
-button:hover, #exportStartButton:hover {
+button:hover,
+#exportStartButton:hover {
 	background-color: rgb(100, 100, 100);
 }
 
-button:active, #exportStartButton {
+button:active,
+#exportStartButton {
 	background-color: rgb(60, 60, 60);
 }
 
-button:disabled, #exportStartButton[disabled=true] {
+button:disabled,
+#exportStartButton[disabled="true"] {
 	background-color: rgb(60, 60, 60);
 	color: rgb(150, 150, 150);
 	cursor: default;
@@ -129,7 +134,7 @@ span {
 }
 
 #importForm > input {
-	display: none
+	display: none;
 }
 
 #importForm > label {

@@ -17,12 +17,24 @@ let volumeSlider: HTMLInputElement;
 
 let volumeBeforeMute = 0;
 
-export function init(load: () => Promise<void>, play: () => void, stop: () => void) {
-	seqLeftButton = document.getElementById("seqLeftButton") as HTMLButtonElement;
+export function init(
+	load: () => Promise<void>,
+	play: () => void,
+	stop: () => void
+) {
+	seqLeftButton = document.getElementById(
+		"seqLeftButton"
+	) as HTMLButtonElement;
 	seqSelect = document.getElementById("seqSelect") as HTMLSelectElement;
-	seqRightButton = document.getElementById("seqRightButton") as HTMLButtonElement;
-	seqPlayButton = document.getElementById("seqPlayButton") as HTMLButtonElement;
-	seqStopButton = document.getElementById("seqStopButton") as HTMLButtonElement;
+	seqRightButton = document.getElementById(
+		"seqRightButton"
+	) as HTMLButtonElement;
+	seqPlayButton = document.getElementById(
+		"seqPlayButton"
+	) as HTMLButtonElement;
+	seqStopButton = document.getElementById(
+		"seqStopButton"
+	) as HTMLButtonElement;
 	speakerIcon = document.getElementById("speakerIcon") as HTMLImageElement;
 	volumeSlider = document.getElementById("volumeSlider") as HTMLInputElement;
 
@@ -63,12 +75,15 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 	});
 
 	seqRightButton.addEventListener("click", () => {
-		seqSelect.selectedIndex = Math.min(seqSelect.options.length - 1, seqSelect.selectedIndex + 1);
+		seqSelect.selectedIndex = Math.min(
+			seqSelect.options.length - 1,
+			seqSelect.selectedIndex + 1
+		);
 		seqSelect.dispatchEvent(new Event("change"));
 	});
 
 	seqSelect.addEventListener("change", async () => {
-		await loadSeq();		
+		await loadSeq();
 	});
 
 	seqPlayButton.addEventListener("click", () => {
@@ -76,7 +91,7 @@ export function init(load: () => Promise<void>, play: () => void, stop: () => vo
 		seqLeftButton.disabled = true;
 		seqSelect.disabled = true;
 		seqRightButton.disabled = true;
-		
+
 		play();
 
 		document.title = `NitroPlay 🎵 ${seqSelect.value}`;

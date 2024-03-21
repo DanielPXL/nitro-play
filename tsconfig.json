@@ -1,9 +1,6 @@
 {
 	"compilerOptions": {
-		"lib": ["ES2015", "WebWorker"],
+		"lib": ["ES2015", "WebWorker"]
 	},
-	"include": [
-		"src/AudioWorker.ts",
-		"src/ServiceWorker.ts",
-	]
+	"include": ["src/AudioWorker.ts", "src/ServiceWorker.ts"]
 }

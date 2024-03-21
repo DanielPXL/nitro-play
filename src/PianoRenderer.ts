@@ -6,7 +6,7 @@ let pianoCtx: CanvasRenderingContext2D;
 let overlayCanvas: HTMLCanvasElement;
 let overlayCtx: CanvasRenderingContext2D;
 
-const notePositions: Map<Audio.Note, { x: number, y: number }> = new Map();
+const notePositions: Map<Audio.Note, { x: number; y: number }> = new Map();
 const noteSize = 0.7;
 
 let whiteKeyWidth: number;
@@ -15,7 +15,9 @@ let blackKeyWidth: number;
 export function init() {
 	pianoCanvas = document.getElementById("pianoCanvas") as HTMLCanvasElement;
 	pianoCtx = pianoCanvas.getContext("2d", { alpha: false })!;
-	overlayCanvas = document.getElementById("pianoOverlayCanvas") as HTMLCanvasElement;
+	overlayCanvas = document.getElementById(
+		"pianoOverlayCanvas"
+	) as HTMLCanvasElement;
 	overlayCtx = overlayCanvas.getContext("2d")!;
 }
 
@@ -36,11 +38,21 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 	for (let note = from; note <= to; note++) {
 		if (isWhiteKey(note)) {
 			pianoCtx.fillStyle = "white";
-			pianoCtx.fillRect(whiteKeyIndex * whiteKeyWidth, 0, whiteKeyWidth, pianoCanvas.height);
+			pianoCtx.fillRect(
+				whiteKeyIndex * whiteKeyWidth,
+				0,
+				whiteKeyWidth,
+				pianoCanvas.height
+			);
 			pianoCtx.strokeStyle = "black";
 			pianoCtx.lineWidth = 2;
-			pianoCtx.strokeRect(whiteKeyIndex * whiteKeyWidth, 0, whiteKeyWidth, pianoCanvas.height);
-			
+			pianoCtx.strokeRect(
+				whiteKeyIndex * whiteKeyWidth,
+				0,
+				whiteKeyWidth,
+				pianoCanvas.height
+			);
+
 			const x = whiteKeyIndex * whiteKeyWidth + whiteKeyWidth / 2;
 			const y = pianoCanvas.height * 0.8;
 			notePositions.set(note, { x, y });
@@ -55,7 +67,12 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 			whiteKeyIndex++;
 		} else {
 			pianoCtx.fillStyle = "black";
-			pianoCtx.fillRect(whiteKeyIndex * whiteKeyWidth - blackKeyWidth / 2, 0, blackKeyWidth, pianoCanvas.height * 0.6);
+			pianoCtx.fillRect(
+				whiteKeyIndex * whiteKeyWidth - blackKeyWidth / 2,
+				0,
+				blackKeyWidth,
+				pianoCanvas.height * 0.6
+			);
 
 			const x = whiteKeyIndex * whiteKeyWidth;
 			const y = pianoCanvas.height * 0.5;
@@ -69,11 +86,13 @@ export function drawNote(note: Audio.Note, volume: number, color: string) {
 	if (!middlePos) {
 		return;
 	}
-	
-	const sidelength = isWhiteKey(note) ? whiteKeyWidth * noteSize * volume : blackKeyWidth * noteSize * volume;
+
+	const sidelength = isWhiteKey(note)
+		? whiteKeyWidth * noteSize * volume
+		: blackKeyWidth * noteSize * volume;
 	const x = middlePos.x - sidelength / 2;
 	const y = middlePos.y - sidelength / 2;
-	
+
 	overlayCtx.fillStyle = color;
 	overlayCtx.fillRect(x, y, sidelength, sidelength);
 }
@@ -87,7 +106,15 @@ export function isWhiteKey(note: Audio.Note) {
 	note += 12 * 100;
 
 	const noteIndex = note % 12;
-	return noteIndex === 0 || noteIndex === 2 || noteIndex === 4 || noteIndex === 5 || noteIndex === 7 || noteIndex === 9 || noteIndex === 11;
+	return (
+		noteIndex === 0 ||
+		noteIndex === 2 ||
+		noteIndex === 4 ||
+		noteIndex === 5 ||
+		noteIndex === 7 ||
+		noteIndex === 9 ||
+		noteIndex === 11
+	);
 }
 
 export function interpolateNoteX(note: Audio.Note) {

@@ -1,0 +1,24 @@
+name: Prettier format check
+
+on:
+    push:
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    prettier:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v4.0.2
+              with:
+                  node-version: 20
+                  cache: "npm"
+            - name: Install node_modules
+              run: npm ci
+            - name: Prettier format check
+              run: npx prettier . --check

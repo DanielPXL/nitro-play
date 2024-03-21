@@ -18,30 +18,33 @@ export const waveExporter: Exporter = {
 				controller.enqueue(waveHeader);
 			},
 			async pull(controller) {
-				const pcmBuf: Float32Array[] = await AudioWorkerComms.call("exportTickUntilBuffer");
+				const pcmBuf: Float32Array[] = await AudioWorkerComms.call(
+					"exportTickUntilBuffer"
+				);
 				const interleavedBuf = WaveFile.interleave(pcmBuf);
-				
+
 				i += pcmBuf[0].length;
 				if (i > numSamples) {
 					// Done, strip the data that's above the size of the file
 					const samplesToRemove = i - numSamples;
-					const newBuf = interleavedBuf.slice(0, interleavedBuf.length - samplesToRemove * 2);
+					const newBuf = interleavedBuf.slice(
+						0,
+						interleavedBuf.length - samplesToRemove * 2
+					);
 					const byteBuf = new Uint8Array(newBuf.buffer);
 
-					controller.enqueue(byteBuf);					
+					controller.enqueue(byteBuf);
 					controller.close();
 				} else {
 					// Not done, add the whole buffer
-					const byteBuf = new Uint8Array(interleavedBuf.buffer);					
+					const byteBuf = new Uint8Array(interleavedBuf.buffer);
 					controller.enqueue(byteBuf);
 					onProgress(i / numSamples);
 				}
 			},
-			cancel() {
-				
-			}
+			cancel() {}
 		};
 
 		return stream;
 	}
-}
+};

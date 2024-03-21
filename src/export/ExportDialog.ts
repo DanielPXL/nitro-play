@@ -24,10 +24,11 @@ const commonControlsSchema: ControlSectionEntry[] = [
 
 			for (let i = 0; i < exportControls.length; i++) {
 				if (exportControls[i]) {
-					exportControlSections[i].style.display = i === index ? "" : "none";
+					exportControlSections[i].style.display =
+						i === index ? "" : "none";
 				}
 			}
-		},
+		}
 	},
 	{
 		type: "slider",
@@ -51,7 +52,7 @@ const commonControlsSchema: ControlSectionEntry[] = [
 		id: "compress",
 		default: true
 	}
-]
+];
 
 export function init() {
 	exportDialog = document.getElementById("exportDialog") as HTMLDialogElement;
@@ -59,25 +60,40 @@ export function init() {
 		e.preventDefault();
 	});
 
-	exportConfigContainer = document.getElementById("exportConfigContainer") as HTMLDivElement;
-	exportStartContainer = document.getElementById("exportStartContainer") as HTMLDivElement;
+	exportConfigContainer = document.getElementById(
+		"exportConfigContainer"
+	) as HTMLDivElement;
+	exportStartContainer = document.getElementById(
+		"exportStartContainer"
+	) as HTMLDivElement;
 
-	document.getElementById("exportCancelButton")!.addEventListener("click", () => {
-		exportDialog.close();
-	});
+	document
+		.getElementById("exportCancelButton")!
+		.addEventListener("click", () => {
+			exportDialog.close();
+		});
 
-	document.getElementById("exportContinueButton")!.addEventListener("click", async () => {
-		await continueExport();
-	});
+	document
+		.getElementById("exportContinueButton")!
+		.addEventListener("click", async () => {
+			await continueExport();
+		});
 
 	// Create the control sections for each exporter first so that they can be controlled by the common controls
-	const exportControlsSection = exportDialog.querySelector("#exportControls") as HTMLElement;
+	const exportControlsSection = exportDialog.querySelector(
+		"#exportControls"
+	) as HTMLElement;
 	for (const exporter of exporters) {
 		const section = document.createElement("section");
 		exportControlsSection.appendChild(section);
 
 		if (exporter.configSchema) {
-			const controls = new ControlSection(section, exporter.name, "export_" + exporter.storageTag, exporter.configSchema);
+			const controls = new ControlSection(
+				section,
+				exporter.name,
+				"export_" + exporter.storageTag,
+				exporter.configSchema
+			);
 			exportControls.push(controls);
 		} else {
 			exportControls.push(null);
@@ -86,11 +102,20 @@ export function init() {
 		exportControlSections.push(section);
 	}
 
-	const commonControlsSection = exportDialog.querySelector("#exportCommonControls") as HTMLElement;
-	commonControls = new ControlSection(commonControlsSection, "Export", "export_common", commonControlsSchema);
+	const commonControlsSection = exportDialog.querySelector(
+		"#exportCommonControls"
+	) as HTMLElement;
+	commonControls = new ControlSection(
+		commonControlsSection,
+		"Export",
+		"export_common",
+		commonControlsSchema
+	);
 
 	// Second part of the dialog
-	exportStartButton = document.getElementById("exportStartButton") as HTMLAnchorElement;
+	exportStartButton = document.getElementById(
+		"exportStartButton"
+	) as HTMLAnchorElement;
 	ProgressStatus.init();
 
 	exportStartButton.addEventListener("click", () => {
@@ -130,7 +155,7 @@ export function enableStartButton(url: string, filename: string) {
 async function continueExport() {
 	exportConfigContainer.style.display = "none";
 	exportStartContainer.style.display = "flex";
-	
+
 	const exporterName = commonControls.get("exportAs");
 	const exporterIndex = exporters.findIndex((e) => e.name === exporterName);
 
@@ -141,6 +166,13 @@ async function continueExport() {
 	const configSection = exportControls[exporterIndex];
 
 	ProgressStatus.reset(seconds);
-	
-	await prepareStreamExport(exporterIndex, sampleRate, seconds, compress, seqName, configSection);
+
+	await prepareStreamExport(
+		exporterIndex,
+		sampleRate,
+		seconds,
+		compress,
+		seqName,
+		configSection
+	);
 }

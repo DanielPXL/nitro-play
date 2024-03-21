@@ -18,9 +18,7 @@ self.addEventListener("install", (e: ExtendableEvent) => {
 
 async function activate() {
 	const keys = await caches.keys();
-	await Promise.all(
-		keys.map(key => key !== version && caches.delete(key))
-	);
+	await Promise.all(keys.map((key) => key !== version && caches.delete(key)));
 }
 
 self.addEventListener("activate", (e: ExtendableEvent) => {
@@ -43,17 +41,21 @@ self.addEventListener("fetch", (e: FetchEvent) => {
 	if (lastPartOfUrl && streams.has(lastPartOfUrl)) {
 		const stream = streams.get(lastPartOfUrl)!;
 		streams.delete(lastPartOfUrl);
-		e.respondWith(new Response(stream.stream, { headers: new Headers(stream.headers) }));
+		e.respondWith(
+			new Response(stream.stream, {
+				headers: new Headers(stream.headers)
+			})
+		);
 		return;
 	}
 
 	// Don't cache requests for localhost
 	if (e.request.url.includes("localhost")) return;
 	if (e.request.url.includes("127.0.0.1")) return;
-	
+
 	async function getResponse() {
 		const cache = await caches.open(version);
-		
+
 		// Parcel adds stupid timestamps to the end of the URLs (at least for debug builds)
 		// and I can't figure out how to disable them,
 		// so I'm just going to strip them off here
@@ -69,7 +71,10 @@ self.addEventListener("fetch", (e: FetchEvent) => {
 	e.respondWith(getResponse());
 });
 
-let handlers: Map<string, (data: any, call: (type: string, data: any) => Promise<any>) => void> = new Map();
+let handlers: Map<
+	string,
+	(data: any, call: (type: string, data: any) => Promise<any>) => void
+> = new Map();
 let callResponseHandlers: Map<number, (data: any) => void> = new Map();
 let callId = 0;
 
@@ -133,7 +138,8 @@ handlers.set("setStream", (data, call) => {
 
 	function randomString(n: number) {
 		let str = "";
-		const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		const chars =
+			"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		for (let i = 0; i < n; i++) {
 			str += chars[Math.floor(Math.random() * chars.length)];
 		}

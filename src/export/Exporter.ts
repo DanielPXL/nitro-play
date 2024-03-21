@@ -21,5 +21,10 @@ export interface Exporter {
 	mimeType: string;
 	fileExtension: string;
 	configSchema?: ControlSectionEntry[];
-	getStream(sampleRate: number, seconds: number, onProgress: (amount: number) => void, config: ControlSection | null): StreamSource;
+	getStream(
+		sampleRate: number,
+		seconds: number,
+		onProgress: (amount: number) => void,
+		config: ControlSection | null
+	): StreamSource;
 }

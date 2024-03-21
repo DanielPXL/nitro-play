@@ -7,9 +7,15 @@ let fullLength: number;
 
 export function init() {
 	parentDiv = document.getElementById("exportProgress") as HTMLDivElement;
-	progressBar = document.getElementById("exportProgressBar") as HTMLProgressElement;
-	progressPercentage = document.getElementById("exportProgressPercentage") as HTMLSpanElement;
-	progressAbsolute = document.getElementById("exportProgressAbsolute") as HTMLSpanElement;
+	progressBar = document.getElementById(
+		"exportProgressBar"
+	) as HTMLProgressElement;
+	progressPercentage = document.getElementById(
+		"exportProgressPercentage"
+	) as HTMLSpanElement;
+	progressAbsolute = document.getElementById(
+		"exportProgressAbsolute"
+	) as HTMLSpanElement;
 
 	hide();
 }
@@ -32,5 +38,6 @@ export function reset(_fullLength: number) {
 export function update(amount: number) {
 	progressBar.value = amount;
 	progressPercentage.textContent = (amount * 100).toFixed(2) + "%";
-	progressAbsolute.textContent = (amount * fullLength).toFixed(2) + "s / " + fullLength.toFixed(2) + "s";
+	progressAbsolute.textContent =
+		(amount * fullLength).toFixed(2) + "s / " + fullLength.toFixed(2) + "s";
 }

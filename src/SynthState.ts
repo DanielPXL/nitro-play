@@ -22,7 +22,10 @@ export function createSynthState(renderer: Audio.SequenceRenderer): SynthState {
 		for (const p of renderer.synth.channels[i].playing) {
 			if (p) {
 				channels[i].playing.push({
-					note: p.notePlusPortamento + p.trackInfo.pitchBendSemitones + getModulationSemitones(p, renderer.synth.time),
+					note:
+						p.notePlusPortamento +
+						p.trackInfo.pitchBendSemitones +
+						getModulationSemitones(p, renderer.synth.time),
 					volume: getVolume(p),
 					state: p.envelope.state
 				});
@@ -49,18 +52,24 @@ function getModulationSemitones(playing: Audio.PlayingNote, time: number) {
 		return 0;
 	}
 
-	const modulationAmplitude = (playing.trackInfo.modDepth / 127) * playing.trackInfo.modRange;
+	const modulationAmplitude =
+		(playing.trackInfo.modDepth / 127) * playing.trackInfo.modRange;
 	const modulationFreq = (playing.trackInfo.modSpeed / 127) * 50;
-	
-	const modulationValue = modulationAmplitude * Math.sin(2 * Math.PI * modulationFreq * (time - playing.modulationStartTime));
+
+	const modulationValue =
+		modulationAmplitude *
+		Math.sin(
+			2 * Math.PI * modulationFreq * (time - playing.modulationStartTime)
+		);
 	return modulationValue;
 }
 
 function getVolume(playing: Audio.PlayingNote) {
-	const volume = playing.velocity
-		+ playing.envelope.gain
-		+ Audio.ADSRConverter.convertSustain(playing.trackInfo.volume1)
-		+ Audio.ADSRConverter.convertSustain(playing.trackInfo.volume2);
-	
+	const volume =
+		playing.velocity +
+		playing.envelope.gain +
+		Audio.ADSRConverter.convertSustain(playing.trackInfo.volume1) +
+		Audio.ADSRConverter.convertSustain(playing.trackInfo.volume2);
+
 	return Audio.ADSRConverter.convertVolume(volume) * playing.modulationVolume;
 }

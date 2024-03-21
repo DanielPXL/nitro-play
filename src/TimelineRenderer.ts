@@ -14,24 +14,32 @@ export class TimelineRenderer {
 	canvas: HTMLCanvasElement;
 	ctx: CanvasRenderingContext2D;
 
-	draw(colors: string[], time: number, noteRange: [Audio.Note, Audio.Note], timeRange: [number, number]) {
+	draw(
+		colors: string[],
+		time: number,
+		noteRange: [Audio.Note, Audio.Note],
+		timeRange: [number, number]
+	) {
 		if (this.canvas.height === 0) {
 			return;
 		}
 
 		const noteRangeCount = noteRange[1] - noteRange[0];
 		const absoluteTimeRange = [timeRange[0] + time, timeRange[1] + time];
-	
+
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		let lastStateForChannel: SynthState | undefined;
 		for (const states of StateManager.statesQueue) {
 			if (states === undefined) {
 				continue;
 			}
-	
-			for (const s of states) {				
+
+			for (const s of states) {
 				// Extend the bounds a little bit to avoid flickering
-				if (s.time < (absoluteTimeRange[0] - 0.1) || lastStateForChannel === undefined) {
+				if (
+					s.time < absoluteTimeRange[0] - 0.1 ||
+					lastStateForChannel === undefined
+				) {
 					lastStateForChannel = s;
 					continue;
 				}
@@ -49,23 +57,42 @@ export class TimelineRenderer {
 						if (note.state === Audio.EnvelopeState.Release) {
 							continue;
 						}
-						
-						const noteWidth = this.canvas.width / noteRangeCount * note.volume;
+
+						const noteWidth =
+							(this.canvas.width / noteRangeCount) * note.volume;
 
 						let noteX: number;
 						if (alignNotes) {
 							noteX = interpolateNoteX(note.note) - noteWidth / 2;
 						} else {
-							noteX = (note.note - noteRange[0]) / noteRangeCount * this.canvas.width - noteWidth / 2;
+							noteX =
+								((note.note - noteRange[0]) / noteRangeCount) *
+									this.canvas.width -
+								noteWidth / 2;
 						}
 
-						const noteY = invLerp(absoluteTimeRange[0], absoluteTimeRange[1], s.time) * this.canvas.height;
-						const lastNoteY = invLerp(absoluteTimeRange[0], absoluteTimeRange[1], lastStateForChannel.time) * this.canvas.height;
+						const noteY =
+							invLerp(
+								absoluteTimeRange[0],
+								absoluteTimeRange[1],
+								s.time
+							) * this.canvas.height;
+						const lastNoteY =
+							invLerp(
+								absoluteTimeRange[0],
+								absoluteTimeRange[1],
+								lastStateForChannel.time
+							) * this.canvas.height;
 
 						// Add 1 to remove small gaps between notes
 						const noteHeight = Math.abs(noteY - lastNoteY) + 1;
 
-						this.ctx.fillRect(noteX, this.canvas.height - noteY, noteWidth, noteHeight);
+						this.ctx.fillRect(
+							noteX,
+							this.canvas.height - noteY,
+							noteWidth,
+							noteHeight
+						);
 					}
 				}
 

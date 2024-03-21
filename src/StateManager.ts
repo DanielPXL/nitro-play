@@ -55,7 +55,7 @@ export function discardStates(time: number) {
 
 		return s[s.length - 1].time;
 	}
-	
+
 	while (lastTimeInState(statesQueue.peek()) < time) {
 		statesQueue.dequeue();
 	}

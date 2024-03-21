@@ -1,34 +1,44 @@
 export const storagePrefix = "nitro-play";
 
 export type ControlSectionEntry = {
-	text: string,
-	id: string
-} & ({
-	type: "checkbox",
-	default: boolean,
-	update?: (value: boolean) => void
-} | {
-	type: "slider",
-	default: number,
-	min: number,
-	max: number,
-	integer?: boolean,
-	forceRange?: boolean,
-	update?: (value: number) => void
-} | {
-	type: "minmax",
-	default: [number, number]
-	integer?: boolean,
-	update?: (value: [number, number]) => void
-} | {
-	type: "select",
-	default: string,
-	options: string[],
-	update?: (value: string) => void
-})
+	text: string;
+	id: string;
+} & (
+	| {
+			type: "checkbox";
+			default: boolean;
+			update?: (value: boolean) => void;
+	  }
+	| {
+			type: "slider";
+			default: number;
+			min: number;
+			max: number;
+			integer?: boolean;
+			forceRange?: boolean;
+			update?: (value: number) => void;
+	  }
+	| {
+			type: "minmax";
+			default: [number, number];
+			integer?: boolean;
+			update?: (value: [number, number]) => void;
+	  }
+	| {
+			type: "select";
+			default: string;
+			options: string[];
+			update?: (value: string) => void;
+	  }
+);
 
 export class ControlSection {
-	constructor(parent: HTMLElement, title: string, storageTag: string, entries: ControlSectionEntry[]) {
+	constructor(
+		parent: HTMLElement,
+		title: string,
+		storageTag: string,
+		entries: ControlSectionEntry[]
+	) {
 		this.parent = parent;
 		this.storageTag = storageTag;
 
@@ -36,7 +46,7 @@ export class ControlSection {
 	}
 
 	private parent: HTMLElement;
-	private storageTag: string
+	private storageTag: string;
 	private values: Map<string, any> = new Map();
 
 	public get(id: string): any {
@@ -62,7 +72,11 @@ export class ControlSection {
 		this.parent.appendChild(groupDiv);
 	}
 
-	private createEntry(entry: ControlSectionEntry, parent: HTMLElement, index: number) {
+	private createEntry(
+		entry: ControlSectionEntry,
+		parent: HTMLElement,
+		index: number
+	) {
 		const text = document.createElement("div");
 		text.textContent = entry.text;
 		text.style.gridColumn = "1";
@@ -98,7 +112,7 @@ export class ControlSection {
 		const thisObject = this;
 		function updateEntry(value: any) {
 			thisObject.values.set(entry.id, value);
-			
+
 			if (entry.update) {
 				entry.update(value as never);
 			}
@@ -114,14 +128,21 @@ export class ControlSection {
 				});
 
 				checkbox.type = "checkbox";
-				checkbox.checked = storedValue !== null ? storedValue === "true" : entry.default;
+				checkbox.checked =
+					storedValue !== null
+						? storedValue === "true"
+						: entry.default;
 				checkbox.onchange = () => {
 					storeValue(checkbox.checked);
 					updateEntry(checkbox.checked);
-				}
+				};
 
 				controlDiv.appendChild(checkbox);
-				updateEntry(storedValue !== null ? storedValue === "true" : entry.default);
+				updateEntry(
+					storedValue !== null
+						? storedValue === "true"
+						: entry.default
+				);
 				break;
 			}
 
@@ -137,10 +158,17 @@ export class ControlSection {
 				slider.type = "range";
 				slider.min = entry.min.toString();
 				slider.max = entry.max.toString();
-				slider.step = entry.integer ? "1" : ((entry.max - entry.min) / 100).toString();
-				slider.value = storedValue !== null ? storedValue : entry.default.toString();
+				slider.step = entry.integer
+					? "1"
+					: ((entry.max - entry.min) / 100).toString();
+				slider.value =
+					storedValue !== null
+						? storedValue
+						: entry.default.toString();
 				slider.oninput = () => {
-					let value = entry.integer ? Math.round(slider.valueAsNumber) : slider.valueAsNumber;
+					let value = entry.integer
+						? Math.round(slider.valueAsNumber)
+						: slider.valueAsNumber;
 
 					if (entry.forceRange) {
 						if (value < entry.min) {
@@ -153,10 +181,13 @@ export class ControlSection {
 					numberInput.valueAsNumber = value;
 					storeValue(value);
 					updateEntry(value);
-				}
+				};
 
 				numberInput.type = "number";
-				numberInput.value = storedValue !== null ? storedValue : entry.default.toString();
+				numberInput.value =
+					storedValue !== null
+						? storedValue
+						: entry.default.toString();
 				numberInput.step = entry.integer ? "1" : "0.01";
 				if (entry.forceRange) {
 					numberInput.min = entry.min.toString();
@@ -164,7 +195,9 @@ export class ControlSection {
 				}
 
 				numberInput.oninput = () => {
-					let value = entry.integer ? Math.round(numberInput.valueAsNumber) : numberInput.valueAsNumber;
+					let value = entry.integer
+						? Math.round(numberInput.valueAsNumber)
+						: numberInput.valueAsNumber;
 
 					if (entry.forceRange) {
 						if (value < entry.min) {
@@ -179,12 +212,14 @@ export class ControlSection {
 					slider.valueAsNumber = value;
 					storeValue(value);
 					updateEntry(value);
-				}
+				};
 
 				controlDiv.appendChild(slider);
 				controlDiv.appendChild(numberInput);
 
-				updateEntry(storedValue !== null ? +storedValue : entry.default);
+				updateEntry(
+					storedValue !== null ? +storedValue : entry.default
+				);
 
 				break;
 			}
@@ -208,9 +243,15 @@ export class ControlSection {
 
 					let value: [number, number];
 					if (entry.integer) {
-						value = [Math.round(minInput.valueAsNumber), Math.round(maxInput.valueAsNumber)];
+						value = [
+							Math.round(minInput.valueAsNumber),
+							Math.round(maxInput.valueAsNumber)
+						];
 					} else {
-						value = [minInput.valueAsNumber, maxInput.valueAsNumber];
+						value = [
+							minInput.valueAsNumber,
+							maxInput.valueAsNumber
+						];
 					}
 
 					storeValue(JSON.stringify(value));
@@ -218,24 +259,30 @@ export class ControlSection {
 				}
 
 				minInput.type = "number";
-				minInput.value = storedValue !== null ? JSON.parse(storedValue)[0] : entry.default[0].toString();
+				minInput.value =
+					storedValue !== null
+						? JSON.parse(storedValue)[0]
+						: entry.default[0].toString();
 				minInput.step = entry.integer ? "1" : "0.01";
 				minInput.oninput = () => {
 					if (minInput.valueAsNumber > maxInput.valueAsNumber) {
 						maxInput.valueAsNumber = minInput.valueAsNumber;
 					}
 					oninput();
-				}
+				};
 
 				maxInput.type = "number";
-				maxInput.value = storedValue !== null ? JSON.parse(storedValue)[1] : entry.default[1].toString();
+				maxInput.value =
+					storedValue !== null
+						? JSON.parse(storedValue)[1]
+						: entry.default[1].toString();
 				maxInput.step = entry.integer ? "1" : "0.01";
 				maxInput.oninput = () => {
 					if (maxInput.valueAsNumber < minInput.valueAsNumber) {
 						minInput.valueAsNumber = maxInput.valueAsNumber;
 					}
 					oninput();
-				}
+				};
 
 				controlDiv.appendChild(document.createTextNode("Min:"));
 				controlDiv.appendChild(minInput);
@@ -262,11 +309,12 @@ export class ControlSection {
 					select.appendChild(optionElement);
 				}
 
-				select.value = storedValue !== null ? storedValue : entry.default;
+				select.value =
+					storedValue !== null ? storedValue : entry.default;
 				select.onchange = () => {
 					storeValue(select.value);
 					updateEntry(select.value);
-				}
+				};
 
 				controlDiv.appendChild(select);
 				updateEntry(storedValue !== null ? storedValue : entry.default);
