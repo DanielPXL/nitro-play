@@ -52,7 +52,8 @@ export function ControlPanel({ show, load, start, onClose }) {
 					}}
 					onPlay={() => {
 						setIsPlaying(true);
-						start(seqs[selectedIndex]);
+						start();
+						document.title = `NitroPlay 🎵 ${seqs[selectedIndex]}`;
 					}}
 					onStop={() => {
 						setIsPlaying(false);
@@ -61,6 +62,7 @@ export function ControlPanel({ show, load, start, onClose }) {
 						load(seqs[selectedIndex]).then(() => {
 							setIsLoading(false);
 						});
+						document.title = "NitroPlay";
 					}}
 				/>
 			</section>
