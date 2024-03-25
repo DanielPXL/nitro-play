@@ -1,0 +1,22 @@
+.controlRow {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.volumeBarContainer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.volumeIcon {
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+}
+
+.volumeBar {
+	width: 100%;
+	cursor: pointer;
+}

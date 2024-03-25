@@ -1,6 +1,15 @@
 {
 	"compilerOptions": {
-		"lib": ["ES2015", "WebWorker"]
-	},
-	"include": ["src/AudioWorker.ts", "src/ServiceWorker.ts"]
+		"lib": ["ES2015", "DOM", "WebWorker"],
+		"module": "ES2020",
+		"target": "ES2015",
+		"plugins": [
+			{
+				"name": "typescript-plugin-css-modules"
+			}
+		],
+		"jsx": "preserve",
+		"esModuleInterop": true,
+		"moduleResolution": "Node"
+	}
 }

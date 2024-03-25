@@ -1,5 +1,5 @@
 import { Exporter, StreamSource } from "../Exporter";
-import * as AudioWorkerComms from "../../AudioWorkerComms";
+import * as AudioWorkerComms from "../../core/AudioWorkerComms";
 import * as WaveFile from "./WaveFile";
 
 export const waveExporter: Exporter = {
@@ -7,7 +7,7 @@ export const waveExporter: Exporter = {
 	storageTag: "wave",
 	mimeType: "audio/wav",
 	fileExtension: "wav",
-	getStream(sampleRate, seconds, onProgress, config) {
+	getStream(sampleRate, seconds, onProgress) {
 		const numSamples = Math.floor(sampleRate * seconds);
 		let i = 0;
 

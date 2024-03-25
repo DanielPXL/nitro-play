@@ -1,0 +1,23 @@
+.menuButtons {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	margin-top: 8px;
+}
+
+.startButton {
+	text-decoration: none;
+}
+
+.progressContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.progress {
+	width: 200px;
+	height: 20px;
+	padding-bottom: 8px;
+}

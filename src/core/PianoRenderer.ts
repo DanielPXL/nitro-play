@@ -1,5 +1,4 @@
 import { Audio } from "nitro-fs";
-import { SynthState } from "./SynthState";
 
 let pianoCanvas: HTMLCanvasElement;
 let pianoCtx: CanvasRenderingContext2D;

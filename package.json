@@ -7,13 +7,21 @@
 		"build": "parcel build --public-url ./",
 		"format": "prettier . --write"
 	},
-	"author": "",
+	"author": "DanielPXL",
 	"license": "GPL-3.0-or-later",
+	"dependencies": {
+		"nitro-fs": "^1.1.1",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
 	"devDependencies": {
 		"@parcel/service-worker": "^2.12.0",
-		"nitro-fs": "^1.1.1",
+		"@types/react": "^18.2.67",
+		"@types/react-dom": "^18.2.22",
 		"parcel": "^2.12.0",
-		"prettier": "3.2.5"
+		"prettier": "3.2.5",
+		"process": "^0.11.10",
+		"typescript-plugin-css-modules": "^5.1.0"
 	},
 	"@parcel/runtime-js": {
 		"splitManifestThreshold": 100000000

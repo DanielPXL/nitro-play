@@ -1,0 +1,17 @@
+.grid {
+	display: grid;
+	grid-template-columns: 1fr 2fr auto;
+	gap: 4px;
+	align-items: center;
+}
+
+.gridItem {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	justify-content: flex-end;
+}
+
+.slider {
+	width: 100%;
+}

@@ -1,0 +1,43 @@
+.collapsibleSection {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.title {
+	padding: 0px 0px 8px 0px;
+	margin: 0px;
+	cursor: pointer;
+	display: flex;
+	align-content: center;
+	gap: 8px;
+	user-select: none;
+}
+
+.wrapper {
+	display: flex;
+}
+
+.wrapper .collapsible {
+	transition: all 0.3s ease;
+	max-height: 0;
+	overflow: hidden;
+}
+
+.wrapper .collapsed {
+	max-height: 100%;
+}
+
+.arrow {
+	transform: rotate(0deg);
+	width: 21px;
+	height: 15px;
+	transition: all 0.3s ease;
+}
+
+.arrowCollapsed {
+	transform: rotate(180deg);
+	width: 21px;
+	height: 15px;
+	transition: all 0.3s ease;
+}

@@ -1,5 +1,3 @@
-import { ControlSection, ControlSectionEntry } from "../ControlSection";
-
 // The better way to do this would be to just send a ReadableStream to the service worker,
 // which it then downloads. But since Safari doesn't support transfering ReadableStreams,
 // we have to do it like this, unfortunately.
@@ -20,11 +18,9 @@ export interface Exporter {
 	storageTag: string;
 	mimeType: string;
 	fileExtension: string;
-	configSchema?: ControlSectionEntry[];
 	getStream(
 		sampleRate: number,
 		seconds: number,
-		onProgress: (amount: number) => void,
-		config: ControlSection | null
+		onProgress: (amount: number) => void
 	): StreamSource;
 }

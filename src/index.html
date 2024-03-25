@@ -4,91 +4,11 @@
 		<meta charset="utf-8" />
 		<title>NitroPlay</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="ui/styles/Global.css" />
 		<script type="module" src="App.ts"></script>
 	</head>
 	<body>
-		<img id="openButton" src="assets/cog.svg" alt="Open Controls" />
-		<div id="controlPanel">
-			<button id="closeButton">X</button>
-
-			<section>
-				<h2>File</h2>
-				<button id="ndsFileImportButton">Import .nds</button>
-				<button id="exportButton" disabled>Export</button>
-
-				<dialog id="ndsFileImportDialog">
-					<form id="importForm">
-						<label for="ndsFileInput">Select .nds file</label>
-						<input type="file" id="ndsFileInput" accept=".nds" />
-						<span id="ndsFileName"></span>
-						<span id="ndsImportStatus"></span>
-					</form>
-
-					<select id="ndsSdatSelect" disabled></select>
-					<span id="ndsSdatStatus"></span>
-
-					<button id="ndsImportButton" disabled>Import</button>
-				</dialog>
-
-				<dialog id="exportDialog">
-					<div id="exportConfigContainer">
-						<div id="exportControls">
-							<section id="exportCommonControls"></section>
-							<section id="exportControls"></section>
-						</div>
-						<div id="exportMenuButtons">
-							<button id="exportCancelButton">Cancel</button>
-							<button id="exportContinueButton">Continue</button>
-						</div>
-					</div>
-
-					<div id="exportStartContainer">
-						<a id="exportStartButton" target="_blank"
-							>Start Export</a
-						>
-						<div id="exportProgress">
-							<progress
-								id="exportProgressBar"
-								value="0"
-								max="1"
-							></progress>
-							<span id="exportProgressPercentage"></span>
-							<span id="exportProgressAbsolute"></span>
-						</div>
-					</div>
-				</dialog>
-			</section>
-
-			<section>
-				<h2>Playback</h2>
-				<div class="playbackControls">
-					<button id="seqLeftButton" disabled>&larr;</button>
-					<select id="seqSelect" disabled></select>
-					<button id="seqRightButton" disabled>&rarr;</button>
-				</div>
-
-				<div class="playbackControls">
-					<button id="seqPlayButton" disabled>Play</button>
-					<button id="seqStopButton" disabled>Stop</button>
-				</div>
-
-				<div class="volumeBar">
-					<img id="speakerIcon" alt="Volume" />
-					<input
-						type="range"
-						id="volumeSlider"
-						min="0"
-						max="100"
-						value="100"
-					/>
-				</div>
-			</section>
-
-			<section id="config">
-				<h2>Configuration</h2>
-			</section>
-		</div>
+		<div id="reactRoot"></div>
 
 		<div id="viewer">
 			<canvas id="pianoOverlayCanvas"></canvas>

@@ -1,23 +1,9 @@
 import { StreamSourceController } from "./Exporter";
 import * as ServiceWorkerComms from "../ServiceWorkerComms";
-import * as ExportDialog from "./ExportDialog";
-import * as ProgressStatus from "./ProgressStatus";
-import { ControlSection } from "../ControlSection";
 import { waveExporter } from "./wave/WaveExporter";
 import { wavePerChannelExporter } from "./wavePerChannel/WavePerChannelExporter";
 
 export const exporters = [waveExporter, wavePerChannelExporter];
-
-export function init() {
-	ServiceWorkerComms.on("streamReady", (data) => {
-		ExportDialog.enableStartButton(data.data.url, data.data.filename);
-
-		ServiceWorkerComms.send("callResponse", {
-			id: data.id,
-			data: null
-		});
-	});
-}
 
 // TODO: This whole ServiceWorker stuff could be replaced with the
 // File System Access API (which is only available in Chromium).
@@ -30,13 +16,14 @@ export async function prepareStreamExport(
 	seconds: number,
 	compress: boolean,
 	seqName: string,
-	configSection: ControlSection | null
+	onReady: (url: string, filename: string) => void,
+	onProgress: (amount: number) => void,
+	onClose: () => void
 ) {
 	const stream = exporters[exporterIndex].getStream(
 		sampleRate,
 		seconds,
-		ProgressStatus.update,
-		configSection
+		onProgress
 	);
 	await ServiceWorkerComms.ready;
 
@@ -49,7 +36,7 @@ export async function prepareStreamExport(
 				queue.push(buf);
 			},
 			close() {
-				ExportDialog.close();
+				onClose();
 				shouldClose = true;
 			}
 		};
@@ -74,7 +61,7 @@ export async function prepareStreamExport(
 				queue.push(buf);
 			},
 			close() {
-				ExportDialog.close();
+				onClose();
 				shouldClose = true;
 			}
 		};
@@ -97,7 +84,7 @@ export async function prepareStreamExport(
 		ServiceWorkerComms.off("streamPull");
 		ServiceWorkerComms.off("streamCancel");
 
-		ExportDialog.close();
+		onClose();
 
 		ServiceWorkerComms.send("callResponse", {
 			id: callData.id,
@@ -109,6 +96,17 @@ export async function prepareStreamExport(
 	if (compress) {
 		filename += ".gz";
 	}
+
+	ServiceWorkerComms.on("streamReady", (data) => {
+		ServiceWorkerComms.off("streamReady");
+
+		onReady(data.data.url, data.data.filename);
+
+		ServiceWorkerComms.send("callResponse", {
+			id: data.id,
+			data: null
+		});
+	});
 
 	ServiceWorkerComms.send("setStream", {
 		filename,

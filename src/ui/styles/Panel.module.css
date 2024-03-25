@@ -1,0 +1,10 @@
+.panel {
+	color: rgb(230, 230, 230);
+	background-color: rgb(40, 40, 40);
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+	border: 1px solid rgb(80, 80, 80);
+	border-radius: 8px;
+	padding: 12px;
+	margin: 8px;
+	width: max-content;
+}

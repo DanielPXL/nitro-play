@@ -1,5 +1,5 @@
 import { Exporter, StreamSource } from "../Exporter";
-import * as AudioWorkerComms from "../../AudioWorkerComms";
+import * as AudioWorkerComms from "../../core/AudioWorkerComms";
 import * as WaveFile from "../wave/WaveFile";
 import { TarFile } from "./TarFile";
 
@@ -18,7 +18,7 @@ export const wavePerChannelExporter: Exporter = {
 	storageTag: "wavePerChannel",
 	mimeType: "application/x-tar",
 	fileExtension: "tar",
-	getStream(sampleRate, seconds, onProgress, config) {
+	getStream(sampleRate, seconds, onProgress) {
 		const numSamples = Math.floor(sampleRate * seconds);
 		let i = 0;
 		let tracksToExport: number[];

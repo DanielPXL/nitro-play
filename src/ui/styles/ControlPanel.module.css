@@ -1,0 +1,29 @@
+.openButton {
+	position: absolute;
+	top: 32px;
+	left: 32px;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+}
+
+.closeButton {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	box-shadow: 0 0 4px black;
+}
+
+.controlPanel {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	height: 50%;
+	overflow: auto;
+}
+
+.section {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
