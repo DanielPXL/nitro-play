@@ -2,7 +2,8 @@ import {
 	ConfigGrid,
 	ConfigGridCheckbox,
 	ConfigGridMinMax,
-	ConfigGridNumber
+	ConfigGridNumber,
+	ConfigGridSelect
 } from "./ConfigGrid";
 import * as Renderer from "../core/Renderer";
 import { Collapsible } from "./Collapsible";
@@ -54,6 +55,15 @@ export function ConfigSection() {
 							onChange={(value: [number, number]) =>
 								Renderer.setPianoRange(value)
 							}
+						/>
+						<ConfigGridSelect
+							label = "Draw Out of Range Notes"
+							storageTag="drawOutOfRangeType"
+							defaultValue="On Keys"
+							options={["On Both", "On Keys", "On Timeline", "Off"]}
+							onChange={(value: string) => {
+								Renderer.setOutOfRangeBehaviour(value)
+							}}
 						/>
 					</ConfigGrid>
 				</Collapsible>
