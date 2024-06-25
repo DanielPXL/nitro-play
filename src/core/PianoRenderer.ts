@@ -5,13 +5,11 @@ let pianoCtx: CanvasRenderingContext2D;
 let overlayCanvas: HTMLCanvasElement;
 let overlayCtx: CanvasRenderingContext2D;
 
-let rangeFrom: Audio.Note;
-let rangeTo: Audio.Note;
 const notePositions: Map<Audio.Note, { x: number; y: number }> = new Map();
 const noteSize = 0.7;
 
-let drawOutOfRange: Boolean = true;
-const OutOfRangeNoteSize = 10;
+let drawOutOfRange: boolean = true;
+const outOfRangeNoteSize = 10;
 
 let whiteKeyWidth: number;
 let blackKeyWidth: number;
@@ -27,8 +25,6 @@ export function init() {
 
 export function drawKeys(from: Audio.Note, to: Audio.Note) {
 	notePositions.clear();
-	rangeFrom = from;
-	rangeTo = to;
 	pianoCtx.clearRect(0, 0, pianoCanvas.width, pianoCanvas.height);
 
 	let numWhiteKeys = 0;
@@ -87,41 +83,41 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 	}
 }
 
-export function drawNote(note: Audio.Note, volume: number, color: string) {
+export function drawNote(note: Audio.Note, range: [Audio.Note, Audio.Note], volume: number, color: string) {
 	const middlePos = notePositions.get(note);
 	if (!middlePos) {
 		if (!drawOutOfRange) return;
 		overlayCtx.fillStyle = color;
-		if (note < rangeFrom) {
+		if (note < range[0]) {
 			//Path for a Triangle ◀
 			overlayCtx.beginPath();
-			overlayCtx.moveTo(OutOfRangeNoteSize, overlayCanvas.height - 2);
+			overlayCtx.moveTo(outOfRangeNoteSize, overlayCanvas.height - 2);
 			overlayCtx.lineTo(
-				OutOfRangeNoteSize,
-				overlayCanvas.height - 2 - OutOfRangeNoteSize
+				outOfRangeNoteSize,
+				overlayCanvas.height - 2 - outOfRangeNoteSize
 			);
 			overlayCtx.lineTo(
 				0,
-				overlayCanvas.height - 2 - OutOfRangeNoteSize / 2
+				overlayCanvas.height - 2 - outOfRangeNoteSize / 2
 			);
-			overlayCtx.lineTo(OutOfRangeNoteSize, overlayCanvas.height - 2);
-		} else if (note > rangeTo) {
+			overlayCtx.lineTo(outOfRangeNoteSize, overlayCanvas.height - 2);
+		} else if (note > range[1]) {
 			//Path for a Triangle ▶
 			overlayCtx.beginPath();
 			overlayCtx.moveTo(
-				overlayCanvas.width - OutOfRangeNoteSize,
+				overlayCanvas.width - outOfRangeNoteSize,
 				overlayCanvas.height - 2
 			);
 			overlayCtx.lineTo(
-				overlayCanvas.width - OutOfRangeNoteSize,
-				overlayCanvas.height - 2 - OutOfRangeNoteSize
+				overlayCanvas.width - outOfRangeNoteSize,
+				overlayCanvas.height - 2 - outOfRangeNoteSize
 			);
 			overlayCtx.lineTo(
 				overlayCanvas.width,
-				overlayCanvas.height - 2 - OutOfRangeNoteSize / 2
+				overlayCanvas.height - 2 - outOfRangeNoteSize / 2
 			);
 			overlayCtx.lineTo(
-				overlayCanvas.width - OutOfRangeNoteSize,
+				overlayCanvas.width - outOfRangeNoteSize,
 				overlayCanvas.height - 2
 			);
 		}

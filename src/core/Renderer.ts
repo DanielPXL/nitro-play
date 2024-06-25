@@ -86,6 +86,7 @@ function render() {
 
 				PianoRenderer.drawNote(
 					Math.round(note.note),
+					noteRange,
 					note.volume,
 					colors[i]
 				);
@@ -111,7 +112,6 @@ export function alignNotesToPiano(value: boolean) {
 }
 
 export function setOutOfRangeBehaviour(value: string) {
-	console.log(value);
 	switch (value) {
 		default:
 		case "On Keys":
