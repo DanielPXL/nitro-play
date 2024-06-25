@@ -90,26 +90,43 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 export function drawNote(note: Audio.Note, volume: number, color: string) {
 	const middlePos = notePositions.get(note);
 	if (!middlePos) {
-		if(!drawOutOfRange)
-			return;
+		if (!drawOutOfRange) return;
 		overlayCtx.fillStyle = color;
-		if(note < rangeFrom){
+		if (note < rangeFrom) {
 			//Path for a Triangle ◀
 			overlayCtx.beginPath();
 			overlayCtx.moveTo(OutOfRangeNoteSize, overlayCanvas.height - 2);
-			overlayCtx.lineTo(OutOfRangeNoteSize, overlayCanvas.height - 2 - OutOfRangeNoteSize);
-			overlayCtx.lineTo(0, overlayCanvas.height - 2 - (OutOfRangeNoteSize / 2));
+			overlayCtx.lineTo(
+				OutOfRangeNoteSize,
+				overlayCanvas.height - 2 - OutOfRangeNoteSize
+			);
+			overlayCtx.lineTo(
+				0,
+				overlayCanvas.height - 2 - OutOfRangeNoteSize / 2
+			);
 			overlayCtx.lineTo(OutOfRangeNoteSize, overlayCanvas.height - 2);
-		}else if(note > rangeTo){
+		} else if (note > rangeTo) {
 			//Path for a Triangle ▶
 			overlayCtx.beginPath();
-			overlayCtx.moveTo(overlayCanvas.width - OutOfRangeNoteSize, overlayCanvas.height - 2);
-			overlayCtx.lineTo(overlayCanvas.width - OutOfRangeNoteSize, overlayCanvas.height - 2 - OutOfRangeNoteSize);
-			overlayCtx.lineTo(overlayCanvas.width, overlayCanvas.height - 2 - (OutOfRangeNoteSize / 2));
-			overlayCtx.lineTo(overlayCanvas.width - OutOfRangeNoteSize, overlayCanvas.height - 2);
+			overlayCtx.moveTo(
+				overlayCanvas.width - OutOfRangeNoteSize,
+				overlayCanvas.height - 2
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width - OutOfRangeNoteSize,
+				overlayCanvas.height - 2 - OutOfRangeNoteSize
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width,
+				overlayCanvas.height - 2 - OutOfRangeNoteSize / 2
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width - OutOfRangeNoteSize,
+				overlayCanvas.height - 2
+			);
 		}
 		overlayCtx.fill();
-		overlayCtx.closePath()
+		overlayCtx.closePath();
 		return;
 	}
 
@@ -170,6 +187,6 @@ export function resize(yPos: number, width: number, height: number) {
 	overlayCanvas.style.top = `${yPos}px`;
 }
 
-export function setDrawOutOfRange(value: boolean){
+export function setDrawOutOfRange(value: boolean) {
 	drawOutOfRange = value;
 }

@@ -57,12 +57,17 @@ export function ConfigSection() {
 							}
 						/>
 						<ConfigGridSelect
-							label = "Draw Out of Range Notes"
+							label="Draw Out of Range Notes"
 							storageTag="drawOutOfRangeType"
 							defaultValue="On Keys"
-							options={["On Both", "On Keys", "On Timeline", "Off"]}
+							options={[
+								"On Both",
+								"On Keys",
+								"On Timeline",
+								"Off"
+							]}
 							onChange={(value: string) => {
-								Renderer.setOutOfRangeBehaviour(value)
+								Renderer.setOutOfRangeBehaviour(value);
 							}}
 						/>
 					</ConfigGrid>

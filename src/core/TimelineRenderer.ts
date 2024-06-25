@@ -59,33 +59,72 @@ export class TimelineRenderer {
 							continue;
 						}
 
-						if(note.note < noteRange[0] || noteRange[1] < note.note){
-							if(!drawOutOfRange || note.state !== Audio.EnvelopeState.Attack)
+						if (
+							note.note < noteRange[0] ||
+							noteRange[1] < note.note
+						) {
+							if (
+								!drawOutOfRange ||
+								note.state !== Audio.EnvelopeState.Attack
+							)
 								continue;
 
-							const outOfRangeNoteSize = 10
-							const noteY = invLerp(
-								absoluteTimeRange[0],
-								absoluteTimeRange[1],
-								s.time
-							) * this.canvas.height;
+							const outOfRangeNoteSize = 10;
+							const noteY =
+								invLerp(
+									absoluteTimeRange[0],
+									absoluteTimeRange[1],
+									s.time
+								) * this.canvas.height;
 
-							if(note.note < noteRange[0]){
+							if (note.note < noteRange[0]) {
 								//Path for a Triangle ◀
 								this.ctx.beginPath();
-								this.ctx.moveTo(outOfRangeNoteSize, this.canvas.height - noteY);
-								this.ctx.lineTo(outOfRangeNoteSize, this.canvas.height - noteY - outOfRangeNoteSize);
-								this.ctx.lineTo(0, this.canvas.height - noteY - (outOfRangeNoteSize / 2));
-								this.ctx.lineTo(outOfRangeNoteSize, this.canvas.height - noteY);
+								this.ctx.moveTo(
+									outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.lineTo(
+									outOfRangeNoteSize,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize
+								);
+								this.ctx.lineTo(
+									0,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize / 2
+								);
+								this.ctx.lineTo(
+									outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
 								this.ctx.fill();
 								this.ctx.closePath();
-							}else if(note.note > noteRange[0]){	
+							} else if (note.note > noteRange[0]) {
 								//Path for a Triangle ▶
 								this.ctx.beginPath();
-								this.ctx.moveTo(this.canvas.width - outOfRangeNoteSize, this.canvas.height - noteY);
-								this.ctx.lineTo(this.canvas.width - outOfRangeNoteSize, this.canvas.height - noteY - outOfRangeNoteSize);
-								this.ctx.lineTo(this.canvas.width, this.canvas.height - noteY - (outOfRangeNoteSize / 2));
-								this.ctx.lineTo(this.canvas.width - outOfRangeNoteSize, this.canvas.height - noteY);
+								this.ctx.moveTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.lineTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize
+								);
+								this.ctx.lineTo(
+									this.canvas.width,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize / 2
+								);
+								this.ctx.lineTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
 								this.ctx.fill();
 								this.ctx.closePath();
 							}
@@ -149,7 +188,7 @@ export class TimelineRenderer {
 		alignNotes = value;
 	}
 
-	static setDrawOutOfRange(value: boolean){
+	static setDrawOutOfRange(value: boolean) {
 		drawOutOfRange = value;
 	}
 }
