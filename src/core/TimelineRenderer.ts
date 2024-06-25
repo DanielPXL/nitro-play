@@ -4,6 +4,7 @@ import { SynthState } from "./SynthState";
 import { Audio } from "nitro-fs";
 
 let alignNotes = true;
+let drawOutOfRange = false;
 
 export class TimelineRenderer {
 	constructor(canvas: HTMLCanvasElement) {
@@ -55,6 +56,78 @@ export class TimelineRenderer {
 
 					for (const note of channel.playing) {
 						if (note.state === Audio.EnvelopeState.Release) {
+							continue;
+						}
+
+						if (
+							note.note < noteRange[0] ||
+							noteRange[1] < note.note
+						) {
+							if (
+								!drawOutOfRange ||
+								note.state !== Audio.EnvelopeState.Attack
+							)
+								continue;
+
+							const outOfRangeNoteSize = 10;
+							const noteY =
+								invLerp(
+									absoluteTimeRange[0],
+									absoluteTimeRange[1],
+									s.time
+								) * this.canvas.height;
+
+							if (note.note < noteRange[0]) {
+								//Path for a Triangle ◀
+								this.ctx.beginPath();
+								this.ctx.moveTo(
+									outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.lineTo(
+									outOfRangeNoteSize,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize
+								);
+								this.ctx.lineTo(
+									0,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize / 2
+								);
+								this.ctx.lineTo(
+									outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.fill();
+								this.ctx.closePath();
+							} else if (note.note > noteRange[0]) {
+								//Path for a Triangle ▶
+								this.ctx.beginPath();
+								this.ctx.moveTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.lineTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize
+								);
+								this.ctx.lineTo(
+									this.canvas.width,
+									this.canvas.height -
+										noteY -
+										outOfRangeNoteSize / 2
+								);
+								this.ctx.lineTo(
+									this.canvas.width - outOfRangeNoteSize,
+									this.canvas.height - noteY
+								);
+								this.ctx.fill();
+								this.ctx.closePath();
+							}
 							continue;
 						}
 
@@ -113,6 +186,10 @@ export class TimelineRenderer {
 
 	static alignNotesToPiano(value: boolean) {
 		alignNotes = value;
+	}
+
+	static setDrawOutOfRange(value: boolean) {
+		drawOutOfRange = value;
 	}
 }
 

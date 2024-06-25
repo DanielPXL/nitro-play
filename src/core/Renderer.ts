@@ -86,6 +86,7 @@ function render() {
 
 				PianoRenderer.drawNote(
 					Math.round(note.note),
+					noteRange,
 					note.volume,
 					colors[i]
 				);
@@ -108,6 +109,28 @@ export function setPianoHeight(height: number) {
 
 export function alignNotesToPiano(value: boolean) {
 	TimelineRenderer.alignNotesToPiano(value);
+}
+
+export function setOutOfRangeBehaviour(value: string) {
+	switch (value) {
+		default:
+		case "On Keys":
+			PianoRenderer.setDrawOutOfRange(true);
+			TimelineRenderer.setDrawOutOfRange(false);
+			break;
+		case "On Timeline":
+			PianoRenderer.setDrawOutOfRange(false);
+			TimelineRenderer.setDrawOutOfRange(true);
+			break;
+		case "On Both":
+			PianoRenderer.setDrawOutOfRange(true);
+			TimelineRenderer.setDrawOutOfRange(true);
+			break;
+		case "Off":
+			PianoRenderer.setDrawOutOfRange(false);
+			TimelineRenderer.setDrawOutOfRange(false);
+			break;
+	}
 }
 
 export function setPianoRange(value: [number, number]) {

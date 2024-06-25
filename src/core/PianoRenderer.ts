@@ -8,6 +8,9 @@ let overlayCtx: CanvasRenderingContext2D;
 const notePositions: Map<Audio.Note, { x: number; y: number }> = new Map();
 const noteSize = 0.7;
 
+let drawOutOfRange: boolean = true;
+const outOfRangeNoteSize = 10;
+
 let whiteKeyWidth: number;
 let blackKeyWidth: number;
 
@@ -80,9 +83,51 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 	}
 }
 
-export function drawNote(note: Audio.Note, volume: number, color: string) {
+export function drawNote(
+	note: Audio.Note,
+	range: [Audio.Note, Audio.Note],
+	volume: number,
+	color: string
+) {
 	const middlePos = notePositions.get(note);
 	if (!middlePos) {
+		if (!drawOutOfRange) return;
+		overlayCtx.fillStyle = color;
+		if (note < range[0]) {
+			//Path for a Triangle ◀
+			overlayCtx.beginPath();
+			overlayCtx.moveTo(outOfRangeNoteSize, overlayCanvas.height - 2);
+			overlayCtx.lineTo(
+				outOfRangeNoteSize,
+				overlayCanvas.height - 2 - outOfRangeNoteSize
+			);
+			overlayCtx.lineTo(
+				0,
+				overlayCanvas.height - 2 - outOfRangeNoteSize / 2
+			);
+			overlayCtx.lineTo(outOfRangeNoteSize, overlayCanvas.height - 2);
+		} else if (note > range[1]) {
+			//Path for a Triangle ▶
+			overlayCtx.beginPath();
+			overlayCtx.moveTo(
+				overlayCanvas.width - outOfRangeNoteSize,
+				overlayCanvas.height - 2
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width - outOfRangeNoteSize,
+				overlayCanvas.height - 2 - outOfRangeNoteSize
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width,
+				overlayCanvas.height - 2 - outOfRangeNoteSize / 2
+			);
+			overlayCtx.lineTo(
+				overlayCanvas.width - outOfRangeNoteSize,
+				overlayCanvas.height - 2
+			);
+		}
+		overlayCtx.fill();
+		overlayCtx.closePath();
 		return;
 	}
 
@@ -141,4 +186,8 @@ export function resize(yPos: number, width: number, height: number) {
 	overlayCanvas.width = width;
 	overlayCanvas.height = height;
 	overlayCanvas.style.top = `${yPos}px`;
+}
+
+export function setDrawOutOfRange(value: boolean) {
+	drawOutOfRange = value;
 }
