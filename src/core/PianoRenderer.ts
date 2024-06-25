@@ -83,7 +83,12 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 	}
 }
 
-export function drawNote(note: Audio.Note, range: [Audio.Note, Audio.Note], volume: number, color: string) {
+export function drawNote(
+	note: Audio.Note,
+	range: [Audio.Note, Audio.Note],
+	volume: number,
+	color: string
+) {
 	const middlePos = notePositions.get(note);
 	if (!middlePos) {
 		if (!drawOutOfRange) return;
