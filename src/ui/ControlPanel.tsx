@@ -11,6 +11,7 @@ export function ControlPanel({ show, load, start, onClose }) {
 	const [selectedIndex, setSelectedIndex] = useState<number>(0);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isPlaying, setIsPlaying] = useState<boolean>(false);
+	const [allocatedTracks, setAllocatedTracks] = useState<number>(0xffff);
 
 	return (
 		<div
@@ -32,7 +33,12 @@ export function ControlPanel({ show, load, start, onClose }) {
 							setSelectedIndex(0);
 							setIsLoading(true);
 							load(s[0]).then(() => {
-								setIsLoading(false);
+								AudioWorkerComms.call(
+									"findAllocatedTracks"
+								).then((t) => {
+									setAllocatedTracks(t);
+									setIsLoading(false);
+								});
 							});
 						});
 					}}
@@ -47,7 +53,12 @@ export function ControlPanel({ show, load, start, onClose }) {
 						setSelectedIndex(index);
 						setIsLoading(true);
 						load(seqs[index]).then(() => {
-							setIsLoading(false);
+							AudioWorkerComms.call("findAllocatedTracks").then(
+								(t) => {
+									setAllocatedTracks(t);
+									setIsLoading(false);
+								}
+							);
 						});
 					}}
 					onPlay={() => {
@@ -60,14 +71,19 @@ export function ControlPanel({ show, load, start, onClose }) {
 						// Loading stops playback
 						setIsLoading(true);
 						load(seqs[selectedIndex]).then(() => {
-							setIsLoading(false);
+							AudioWorkerComms.call("findAllocatedTracks").then(
+								(t) => {
+									setAllocatedTracks(t);
+									setIsLoading(false);
+								}
+							);
 						});
 						document.title = "NitroPlay";
 					}}
 				/>
 			</section>
 			<section className={classes.section}>
-				<ConfigSection />
+				<ConfigSection allocatedTracks={allocatedTracks} />
 			</section>
 		</div>
 	);

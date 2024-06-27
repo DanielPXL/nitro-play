@@ -23,6 +23,10 @@ let topTime = 1.5;
 let bottomTime = -1;
 let bottomSameSpeed = true;
 
+let topChannels = 0xffff;
+let pianoChannels = 0xffff;
+let bottomChannels = 0xffff;
+
 export function init() {
 	PianoRenderer.init();
 
@@ -71,13 +75,23 @@ export function resize() {
 
 function render() {
 	const time = AudioPlayer.getTime();
-	topTimeline.draw(colors, time, noteRange, [0, topTime]);
-	bottomTimeline.draw(colors, time, noteRange, [bottomTime, 0]);
+	topTimeline.draw(colors, time, noteRange, [0, topTime], topChannels);
+	bottomTimeline.draw(
+		colors,
+		time,
+		noteRange,
+		[bottomTime, 0],
+		bottomChannels
+	);
 
 	const state = StateManager.getState(time);
 	PianoRenderer.clearNotes();
 	if (state) {
 		for (let i = 0; i < state.channels.length; i++) {
+			if ((pianoChannels & (1 << i)) === 0) {
+				continue;
+			}
+
 			const channel = state.channels[i];
 			for (const note of channel.playing) {
 				if (note.state === Audio.EnvelopeState.Release) {
@@ -113,4 +127,38 @@ export function alignNotesToPiano(value: boolean) {
 export function setPianoRange(value: [number, number]) {
 	noteRange = value;
 	PianoRenderer.drawKeys(noteRange[0], noteRange[1]);
+}
+
+export function showChannel(
+	place: "top" | "piano" | "bottom",
+	channel: number
+) {
+	switch (place) {
+		case "top":
+			topChannels |= 1 << channel;
+			break;
+		case "piano":
+			pianoChannels |= 1 << channel;
+			break;
+		case "bottom":
+			bottomChannels |= 1 << channel;
+			break;
+	}
+}
+
+export function hideChannel(
+	place: "top" | "piano" | "bottom",
+	channel: number
+) {
+	switch (place) {
+		case "top":
+			topChannels &= ~(1 << channel);
+			break;
+		case "piano":
+			pianoChannels &= ~(1 << channel);
+			break;
+		case "bottom":
+			bottomChannels &= ~(1 << channel);
+			break;
+	}
 }

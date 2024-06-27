@@ -18,7 +18,8 @@ export class TimelineRenderer {
 		colors: string[],
 		time: number,
 		noteRange: [Audio.Note, Audio.Note],
-		timeRange: [number, number]
+		timeRange: [number, number],
+		shownChannels: number
 	) {
 		if (this.canvas.height === 0) {
 			return;
@@ -49,6 +50,10 @@ export class TimelineRenderer {
 				}
 
 				for (let i = 0; i < s.channels.length; i++) {
+					if ((shownChannels & (1 << i)) === 0) {
+						continue;
+					}
+
 					const channel = s.channels[i];
 
 					this.ctx.fillStyle = colors[i];

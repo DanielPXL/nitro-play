@@ -81,6 +81,7 @@ callables.set("getSeqSymbols", (data) => {
 
 let curSeqSymbol: string;
 let renderer: Audio.SequenceRenderer;
+let activeTracks: number = 0xffff;
 
 callables.set("loadSeq", (data) => {
 	curSeqSymbol = data.name;
@@ -93,7 +94,8 @@ callables.set("loadSeq", (data) => {
 		sink(buffer) {
 			postMessage({ type: "pcm", data: buffer });
 		},
-		bufferLength: 1024 * 16
+		bufferLength: 1024 * 16,
+		activeTracks: activeTracks
 	});
 });
 
@@ -113,6 +115,30 @@ callables.set("tickSeconds", (data) => {
 	}
 
 	return states;
+});
+
+callables.set("setTrackActive", (data) => {
+	if (data.active) {
+		activeTracks |= 1 << data.track;
+	} else {
+		activeTracks &= ~(1 << data.track);
+	}
+
+	if (renderer && renderer.tracks[data.track]) {
+		// This should probably be part of the renderer itself
+		renderer.activeTracks = activeTracks;
+		renderer.tracks[data.track].active = data.active;
+	}
+});
+
+callables.set("findAllocatedTracks", (data) => {
+	let tracks = 0xffff;
+	const cmd = renderer.commands[0];
+	if (cmd instanceof Audio.Commands.AllocateTracks) {
+		tracks = cmd.tracks;
+	}
+
+	return tracks;
 });
 
 let exportRenderer: Audio.SequenceRenderer;

@@ -26,6 +26,7 @@
 
 .wrapper .collapsed {
 	max-height: 100%;
+	padding-bottom: 8px;
 }
 
 .arrow {
