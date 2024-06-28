@@ -185,3 +185,7 @@ export function hideChannel(
 			break;
 	}
 }
+
+export function setChannelColor(channel: number, color: string) {
+	colors[channel] = color;
+}

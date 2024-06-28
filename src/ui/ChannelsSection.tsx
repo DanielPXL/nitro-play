@@ -53,6 +53,11 @@ function ChannelRow({ id, disabled }) {
 	);
 
 	useEffect(() => {
+		const colorString = `rgb(${color.r}, ${color.g}, ${color.b})`;
+		Renderer.setChannelColor(id, colorString);
+	}, [color]);
+
+	useEffect(() => {
 		AudioWorkerComms.call("setTrackActive", {
 			track: id,
 			active: active
