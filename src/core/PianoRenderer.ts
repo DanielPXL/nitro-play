@@ -81,6 +81,14 @@ export function drawKeys(from: Audio.Note, to: Audio.Note) {
 			notePositions.set(note, { x, y });
 		}
 	}
+
+	// For InterpolateNoteX
+	rangeBase = from;
+	rangeOffset =
+		Math.floor((1 / 12) * from + 1) + Math.floor((1 / 12) * (from - 5));
+	if (!isWhiteKey(from)) {
+		rangeOffset += 1;
+	}
 }
 
 export function drawNote(
@@ -161,22 +169,30 @@ export function isWhiteKey(note: Audio.Note) {
 	);
 }
 
+let rangeBase = 0;
+let rangeOffset = 0;
 export function interpolateNoteX(note: Audio.Note) {
-	// TODO: Think of a better way to do this
-	const lowerNote = Math.floor(note);
-	const noteMod1 = note - lowerNote;
+	// Piano Key is the index of the key on the Piano, pretending there are no gap in the black keys
+	const pianoKey = calculateNoteX(note) - rangeBase;
 
-	const lowerPos = notePositions.get(lowerNote);
-	const upperPos = notePositions.get(lowerNote + 1);
-	if (!lowerPos || !upperPos) {
-		return Infinity;
-	}
-
-	return lerp(lowerPos.x, upperPos.x, noteMod1);
+	return ((pianoKey - rangeOffset) * whiteKeyWidth) / 2;
 }
 
-function lerp(a: number, b: number, t: number) {
-	return a + (b - a) * t;
+function calculateNoteX(note: Audio.Note) {
+	// Desmos View and a bit of explaination: https://www.desmos.com/calculator/40j3sx9jsq
+	const noteFloor = Math.floor(note);
+	// Instead of working with floors like the Desmos view, we instead take the mod 12 of note and adjust the multiplier from that
+	const noteMod12 = noteFloor % 12;
+	const mul1 = noteMod12 == 4 ? 1 : 0;
+	const mul2 = noteMod12 == 11 ? 1 : 0;
+	const multiplier = 1 + mul1 + mul2;
+
+	const offsetBase =
+		Math.floor((1 / 12) * note + 1) + Math.floor((1 / 12) * (note - 5));
+	const offsetBetween = -(multiplier - 1) * noteFloor;
+	const offset = offsetBase + offsetBetween;
+
+	return multiplier * note + offset + 1;
 }
 
 export function resize(yPos: number, width: number, height: number) {
