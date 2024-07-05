@@ -13,6 +13,8 @@ const outOfRangeNoteSize = 10;
 
 let whiteKeyWidth: number;
 let blackKeyWidth: number;
+let rangeBase = 0;
+let rangeOffset = 0;
 
 export function init() {
 	pianoCanvas = document.getElementById("pianoCanvas") as HTMLCanvasElement;
@@ -169,8 +171,6 @@ export function isWhiteKey(note: Audio.Note) {
 	);
 }
 
-let rangeBase = 0;
-let rangeOffset = 0;
 export function interpolateNoteX(note: Audio.Note) {
 	// Piano Key is the index of the key on the Piano, pretending there are no gap in the black keys
 	const pianoKey = calculateNoteX(note) - rangeBase;
