@@ -134,8 +134,8 @@ export function ColorPicker({
 							const x = e.clientX - rect.left;
 							const y = e.clientY - rect.top;
 
-							const v = x / rect.width;
-							const s = 1 - y / rect.height;
+							const s = x / rect.width;
+							const v = 1 - y / rect.height;
 
 							setHSV(hsvColor.h, s, v);
 						}}
@@ -149,8 +149,8 @@ export function ColorPicker({
 								).href
 							}
 							style={{
-								top: `${100 - hsvColor.s * 100}%`,
-								left: `${hsvColor.v * 100}%`
+								top: `${100 - hsvColor.v * 100}%`,
+								left: `${hsvColor.s * 100}%`
 							}}
 							draggable={false}
 						></img>
