@@ -1,0 +1,8 @@
+.importButtons {
+	display: flex;
+	gap: 4px;
+}
+
+.importButtons > * {
+	flex-grow: 1;
+}

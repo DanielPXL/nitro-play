@@ -60,7 +60,7 @@ callables.set("parseNds", (data) => {
 	return sdats;
 });
 
-callables.set("checkSdat", (data) => {
+callables.set("checkNdsSdat", (data) => {
 	const fs = NitroFS.fromRom(data.rom);
 	const sdatBuffer = BufferReader.new(fs.readFile(data.path));
 
@@ -68,10 +68,22 @@ callables.set("checkSdat", (data) => {
 	return sdat.fs.sequences.length;
 });
 
-callables.set("useSdat", (data) => {
+callables.set("checkSdat", (data) => {
+	const sdatBuffer = BufferReader.new(data);
+
+	const sdat = new Audio.SDAT(sdatBuffer);
+	return sdat.fs.sequences.length;
+});
+
+callables.set("useNdsSdat", (data) => {
 	const fs = NitroFS.fromRom(data.rom);
 	const sdatBuffer = BufferReader.new(fs.readFile(data.path));
 
+	sdat = new Audio.SDAT(sdatBuffer);
+});
+
+callables.set("useSdat", (data) => {
+	const sdatBuffer = BufferReader.new(data);
 	sdat = new Audio.SDAT(sdatBuffer);
 });
 

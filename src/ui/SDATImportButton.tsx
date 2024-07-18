@@ -3,91 +3,57 @@ import { Dialog } from "./Dialog";
 import * as classes from "./styles/ImportButton.module.css";
 import * as AudioWorkerComms from "../core/AudioWorkerComms";
 
-export function NDSImportButton({ disabled, fileChosen }) {
+export function SDATImportButton({ disabled, fileChosen }) {
 	const [show, setShow] = useState<boolean>(false);
 	const [file, setFile] = useState<File>(null);
 	const [fileStatus, setFileStatus] = useState<string>("");
-	const [possibleSdats, setPossibleSdats] = useState<string[]>([]);
-	const [selectedSdat, setSelectedSdat] = useState<string>(null);
-	const [sdatStatus, setSdatStatus] = useState<string>("");
 	const [sdatIsImportable, setSdatIsImportable] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
 
 	useEffect(() => {
+		setSdatIsImportable(false);
 		if (!file) {
 			setFileStatus("");
 			return;
 		}
 
-		setSelectedSdat(null);
 		setFileStatus("⌛");
 		setLoading(true);
 
 		file.arrayBuffer().then((buffer) => {
-			AudioWorkerComms.call("parseNds", buffer)
-				.then((possibleSdats) => {
-					setFileStatus(`✅ ${possibleSdats.length} SDATs found`);
-					setPossibleSdats(possibleSdats);
-					setSelectedSdat(possibleSdats[0]);
-					setLoading(false);
-				})
-				.catch((err) => {
-					console.error(err);
-					setFileStatus(`❌ Error: ${err.message}`);
-					setPossibleSdats([]);
-					setSelectedSdat(null);
-					setLoading(false);
-				});
-		});
-	}, [file]);
-
-	useEffect(() => {
-		setSdatIsImportable(false);
-		setSdatStatus("");
-		if (!selectedSdat) {
-			return;
-		}
-
-		setSdatStatus("⌛");
-		setLoading(true);
-
-		file.arrayBuffer().then((buffer) => {
-			AudioWorkerComms.call("checkNdsSdat", {
-				rom: buffer,
-				path: selectedSdat
-			})
+			AudioWorkerComms.call("checkSdat", buffer)
 				.then((numSequences) => {
-					setSdatStatus(`✅ ${numSequences} sequences`);
+					setFileStatus(`✅ ${numSequences} sequences`);
 					setSdatIsImportable(true);
 					setLoading(false);
 				})
 				.catch((err) => {
 					console.error(err);
-					setSdatStatus(`❌ Error: ${err.message}`);
+					setFileStatus(`❌ Error: ${err.message}`);
 					setLoading(false);
 				});
 		});
-	}, [selectedSdat]);
+	}, [file]);
 
 	return (
 		<>
 			<button disabled={disabled} onClick={() => setShow(true)}>
-				Import .nds
+				Import .sdat
 			</button>
 			<Dialog show={show}>
 				<div className={classes.container}>
 					<form className={classes.row}>
 						<label
 							className={loading ? "button disabled" : "button"}
-							htmlFor="ndsFile"
+							htmlFor="sdatFile"
 						>
-							Select .nds file
+							Select .sdat file
 						</label>
 						<input
 							className={classes.input}
 							type="file"
-							accept=".nds"
-							id="ndsFile"
+							accept=".sdat"
+							id="sdatFile"
 							onChange={(e) => {
 								if (e.target.files.length > 0) {
 									setFile(e.target.files[0]);
@@ -103,25 +69,18 @@ export function NDSImportButton({ disabled, fileChosen }) {
 					</form>
 
 					<div className={classes.row}>
-						<select
-							disabled={possibleSdats.length == 0 || loading}
-							onChange={(e) => setSelectedSdat(e.target.value)}
-						>
-							{possibleSdats.map((sdat) => (
-								<option key={sdat}>{sdat}</option>
-							))}
-						</select>
-						<span>{sdatStatus}</span>
+						{/* This empty span is literally just so that the button appears on the right */}
+						<span></span>
 						<button
 							disabled={!sdatIsImportable || loading}
 							onClick={() => {
 								setLoading(true);
 
 								file.arrayBuffer().then((buffer) => {
-									AudioWorkerComms.call("useNdsSdat", {
-										rom: buffer,
-										path: selectedSdat
-									}).then(() => {
+									AudioWorkerComms.call(
+										"useSdat",
+										buffer
+									).then(() => {
 										fileChosen();
 										setShow(false);
 										setLoading(false);
