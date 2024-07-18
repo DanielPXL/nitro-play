@@ -1,24 +1,15 @@
-import { version, manifest } from "@parcel/service-worker";
+export {};
 
 declare const self: ServiceWorkerGlobalScope;
 
-async function install() {
-	// Remove duplicates from manifest because for some reason Parcel adds them
-	const manifestNoDupes = Array.from(new Set(manifest));
-
-	const cache = await caches.open(version);
-	await cache.addAll(manifestNoDupes);
-	await cache.add(self.location.href.replace(/\/[^/]*$/, "/"));
-}
-
 self.addEventListener("install", (e: ExtendableEvent) => {
-	e.waitUntil(install());
 	self.skipWaiting();
 });
 
 async function activate() {
+	// Clear old caches (prior versions supported offline use)
 	const keys = await caches.keys();
-	await Promise.all(keys.map((key) => key !== version && caches.delete(key)));
+	await Promise.all(keys.map((key) => caches.delete(key)));
 }
 
 self.addEventListener("activate", (e: ExtendableEvent) => {
@@ -48,27 +39,6 @@ self.addEventListener("fetch", (e: FetchEvent) => {
 		);
 		return;
 	}
-
-	// Don't cache requests for localhost
-	if (e.request.url.includes("localhost")) return;
-	if (e.request.url.includes("127.0.0.1")) return;
-
-	async function getResponse() {
-		const cache = await caches.open(version);
-
-		// Parcel adds stupid timestamps to the end of the URLs (at least for debug builds)
-		// and I can't figure out how to disable them,
-		// so I'm just going to strip them off here
-		const realUrl = e.request.url.replace(/\?.*$/, "");
-		const cachedResponse = await cache.match(realUrl);
-		if (cachedResponse) {
-			return cachedResponse;
-		}
-
-		return fetch(e.request);
-	}
-
-	e.respondWith(getResponse());
 });
 
 let handlers: Map<
